@@ -74,10 +74,13 @@ const ModernTemplate = ({ data, accentColor }) => {
 							{data.experience.map((exp, index) => (
 								<div key={index} className="relative pl-6 border-l border-gray-200">
 
-								<div 
-									className="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full border-2 bg-white" 
-									style={{ borderColor: accentColor }}
-								></div>
+									<div 
+										className="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full border-2 bg-white z-10 transition-all" 
+										style={{ 
+											borderColor: accentColor,
+											boxShadow: `0 0 0 3px ${accentColor}33` // 33 בסוף מוסיף שקיפות לצבע
+										}}
+									></div>
 
 									<div className="flex justify-between items-start mb-2">
 										<div>
