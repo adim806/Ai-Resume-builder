@@ -17,3 +17,50 @@
     @apply outline-none focus:ring border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-lg resize-none;
   }
 }
+
+@media print {
+  /* איפוס שוליים למדפסת */
+  @page {
+    size: auto;
+    margin: 0mm;
+  }
+
+  /* הסתרת כל הגוף של האתר */
+  body {
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  body * {
+    visibility: hidden; /* מסתיר הכל */
+  }
+
+  /* חשיפת אזור הקורות חיים בלבד */
+  #print-area, #print-area * {
+    visibility: visible; /* מציג רק את האזור הזה והילדים שלו */
+  }
+
+  /* הגדרת המיקום והגודל של הקורות חיים בהדפסה */
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    
+    /* כאן הקסם: מכווץ ל-80% כדי להיכנס לדף אחד */
+    /* אם זה עדיין גולש, שנה את המספר ל-0.75 */
+    transform: scale(0.8); 
+    transform-origin: top left;
+    
+    /* פיצוי על הרוחב שאבד בכיווץ (100 חלקי 0.8 = 125) */
+    width: 125%; 
+    
+    /* קריטי! משחרר את הגובה כדי למנוע חפיפת טקסטים */
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+}
