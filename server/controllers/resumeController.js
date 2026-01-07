@@ -30,7 +30,9 @@ export const deleteResume = async (req, res) => {
         const userId = req.userId;
         const { resumeId } = req.params;
 
-        await Resume.findByIdAndDelete({userId, _id: resumeId});
+        //await Resume.findByIdAndDelete({userId, _id: resumeId});
+
+        await Resume.findOneAndDelete({userId, _id: resumeId});
 
         //return success message
         return res.status(200).json({message: 'Resume deleted successfully'})
@@ -47,7 +49,7 @@ export const getResumeById = async (req, res) => {
         const userId = req.userId;
         const { resumeId } = req.params;
 
-        const resume = await Resume.findById({userId, _id: resumeId});
+        const resume = await Resume.findOne({userId, _id: resumeId});
 
         if(!resume){
             return res.status(404).json({message: 'Resume not found'})
@@ -64,11 +66,11 @@ export const getResumeById = async (req, res) => {
 }
 
 //get resume by id public
-//GET: /api/resumes/get/public
+//GET: /api/resumes/public
 export const getPublicResumeById = async (req, res) => {
     try {
         const { resumeId } = req.params;
-        const resume = await Resume.findById({public: true, _id: resumeId});
+        const resume = await Resume.findOne({public: true, _id: resumeId});
 
         if(!resume){
             return res.status(404).json({message: 'Resume not found'})
@@ -85,10 +87,10 @@ export const getPublicResumeById = async (req, res) => {
 export const updateResume = async (req, res) => {
     try {
         const userId = req.userId;
-        const { resumeId , resumaData, removeBackground} = req.params;
+        const { resumeId , resumeData, removeBackground} = req.body;
         const image = req.file;
 
-        let resumeDataCopy = JSON.parse(resumeData);
+        let resumeDataCopy = JSON.parse(JSON.stringify(resumeData));
 
         if(image){
 
@@ -97,7 +99,7 @@ export const updateResume = async (req, res) => {
             const response = await imagekit.files.upload({
                 file: imageBufferData,
                 fileName: 'resume.png',
-                foler: 'user-resumes',
+                folder: 'user-resumes',
                 transformation: {
                     pre: 'w-300,h-300,fo-face,z-0.75' + (removeBackground ? ',e-bgremove' : '')
                 }
@@ -108,7 +110,7 @@ export const updateResume = async (req, res) => {
 
         const resume = await Resume.findByIdAndUpdate({userId, _id: resumeId}, resumeDataCopy, {new: true});
 
-        return res.status(200).json({message: 'Resume updated successfully', resume})
+        return res.status(200).json({message: 'saved successfully', resume})
 
     } catch (error) {
         return res.status(400).json({message: error.message})
