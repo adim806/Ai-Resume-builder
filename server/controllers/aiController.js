@@ -5,6 +5,7 @@ import Resume from "../models/Resume.js";
 //POST: /api/ai/enhance-pro-sum
 export const enhanceProfessionalSummary = async(req, res) => {
     try {
+        console.log("in enhanceProfessionalSummary function");
         const { userContent } = req.body;
 
         if(!userContent){
@@ -24,8 +25,9 @@ export const enhanceProfessionalSummary = async(req, res) => {
             ],
 
         })
-
+       
         const enhanceContent = response.choices[0].message.content;
+        
         return res.status(200).json({enhanceContent})
         
     } catch (error) {
@@ -58,9 +60,11 @@ export const enhanceJobDescription = async(req, res) => {
         })
 
         const enhanceContent = response.choices[0].message.content;
+        console.log("in enhanceJobDescription function - Success");
         return res.status(200).json({enhanceContent})
         
     } catch (error) {
+        console.error("Server Error in enhanceJobDescription:", error);
         return res.status(400).json({message: error.message})
     }
 }
