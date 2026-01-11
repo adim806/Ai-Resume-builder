@@ -46,15 +46,15 @@ const Testimonial = () => {
 
   return (
     <>
-   
-    <div id='testimonials' className='flex flex-col items-center my-10 scroll-mt-12'>
-    <div className="flex items-center gap-2 text-sm text-green-800 bg-green-400/10 rounded-full px-4 py-1">
-        <BookUserIcon className='size-4.5 stroke-green-600'/>
+   <div className='bg-slate-50'>
+   <div id='testimonials' className='flex flex-col items-center  scroll-mt-12 '>
+    <div className="flex items-center gap-2 text-sm text-blue-800 bg-blue-400/10 rounded-full px-4 py-1 ">
+        <BookUserIcon className='size-4.5 stroke-blue-600'/>
         <span>Testimonials</span>
     </div>
-    <Title title="Don't just take our words" description="Hear what our users say about us. We are always looking for ways to improve. If you dont have a positive experience with use, leave a review"/>
+    <Title title="Don't just take our words" description="Hear what our users say about us. We are always looking for ways to improve. If you dont have a positive experience with use, leave a review" />
     </div>
-    <div className="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative">
+    <div className="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative ">
                 <div className="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent"></div>
                 <div className="marquee-inner flex transform-gpu min-w-[200%] pt-10 pb-5">
                     {[...cardsData, ...cardsData].map((card, index) => (
@@ -87,6 +87,8 @@ const Testimonial = () => {
                 animation-direction: reverse;
             }
         `}</style>
+   </div>
+
     </>
     
   )

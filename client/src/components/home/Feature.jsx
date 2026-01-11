@@ -4,8 +4,8 @@ import Title from './Title';
 const Feature = () => {
     const [isHover, setIsHover] = React.useState(false);
   return (
-    <div id='features' className='flex flex-col items-center my-10 scroll-mt-12'>
-            <div className="flex items-center gap-2 text-sm text-green-800 bg-green-400/10 rounded-full px-4 py-1">
+    <div id='features' className='flex flex-col items-center scroll-mt-12 bg-gradient-to-b from-white to-blue-50 text-slate-900 py-3'>
+            <div className="flex items-center gap-2 text-sm text-blue-800 bg-blue-400/10 rounded-full px-4 py-1">
                 <Zap width={14}/>
                 <span>Simple procces</span>
             </div>
