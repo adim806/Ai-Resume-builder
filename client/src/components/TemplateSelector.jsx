@@ -10,6 +10,8 @@ const TemplateSelector = ({selectedTemplate, onChange}) => {
         {id: "modern", name: "Modern", preview: "Sleek design with strategic use of color and modern font choices"},
         {id: "minimal-image", name: "Minimal Image", preview: "Minimal design with a single image and clean typography"},
         {id: "minimal", name: "Minimal", preview: "Ultra-clean design that puts your content front and center"},
+        {id: "professional", name: "Professional", preview: "Elegant two-column design with dark sidebar, perfect for experienced professionals"},
+        {id: "creative", name: "Creative", preview: "Unique design with distinctive header and geometric elements for a memorable impression"},
     ]
     
   return (
