@@ -250,13 +250,39 @@ const CreativeTemplate = ({ data, accentColor }) => {
                         </section>
                     )}
 
-                    {/* Military Service (if exists in experience) */}
-                    <section>
-                        <h2 className="text-lg font-bold text-gray-900 mb-3 pb-2 border-b-2 border-gray-300">
-                            Military Service
-                        </h2>
-         
-                    </section>
+                    {/* Military Service */}
+                    {data.military_service && data.military_service.length > 0 && (
+                        <section>
+                            <h2 className="text-lg font-bold text-gray-900 mb-3 pb-2 border-b-2 border-gray-300">
+                                Military Service
+                            </h2>
+                            <div className="space-y-4">
+                                {data.military_service.map((service, index) => (
+                                    <div key={index}>
+                                        <div className="mb-2">
+                                            <h3 className="font-bold text-gray-900 text-sm leading-snug">
+                                                {service.rank}
+                                            </h3>
+                                            <div className="flex justify-between items-center mt-1">
+                                                <p className="text-sm font-semibold text-gray-700 leading-snug">
+                                                    {service.unit}
+                                                </p>
+                                                <span className="text-xs text-gray-500 italic leading-snug">
+                                                    {formatDate(service.start_date)} - {service.is_current ? "Present" : formatDate(service.end_date)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {service.description && (
+                                            <div 
+                                                className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4"
+                                                dangerouslySetInnerHTML={{ __html: service.description }}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
                 </main>
             </div>
         </div>

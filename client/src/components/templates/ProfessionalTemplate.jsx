@@ -163,7 +163,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                     {data.professional_summary && (
                         <section className="mb-5 flex-shrink-0">
                             <h2 className="text-base font-bold text-slate-800 mb-3 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
-                                Recent {data.personal_info?.profession || "Professional"} graduate
+                                 
                             </h2>
                             <div 
                                 className="text-xs text-gray-700 leading-relaxed whitespace-pre-line"
@@ -208,7 +208,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
 
                     {/* Projects */}
                     {data.projects && data.projects.length > 0 && (
-                        <section className="flex-shrink-0">
+                        <section className="mb-5 flex-shrink-0">
                             <h2 className="text-base font-bold text-slate-800 mb-3 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
                                 Projects
                             </h2>
@@ -225,6 +225,40 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                             <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4">
                                                 {project.description}
                                             </p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Military Service */}
+                    {data.military_service && data.military_service.length > 0 && (
+                        <section className="flex-shrink-0">
+                            <h2 className="text-base font-bold text-slate-800 mb-3 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
+                                Military Service
+                            </h2>
+                            <div className="space-y-4">
+                                {data.military_service.map((service, index) => (
+                                    <div key={index}>
+                                        <div className="mb-1.5">
+                                            <h3 className="font-bold text-slate-800 text-sm leading-snug">
+                                                {service.rank}
+                                            </h3>
+                                            <div className="flex justify-between items-center mt-1">
+                                                <p className="text-sm font-semibold leading-snug" style={{ color: accentColor }}>
+                                                    {service.unit}
+                                                </p>
+                                                <span className="text-xs text-gray-500 italic leading-snug">
+                                                    {formatDate(service.start_date)} - {service.is_current ? "Present" : formatDate(service.end_date)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {service.description && (
+                                            <div 
+                                                className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4"
+                                                dangerouslySetInnerHTML={{ __html: service.description }}
+                                            />
                                         )}
                                     </div>
                                 ))}

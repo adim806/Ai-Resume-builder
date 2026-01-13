@@ -1,7 +1,7 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { dummyResumeData } from '../assets/assets'
-import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User } from 'lucide-react'
+import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User, Shield } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -11,6 +11,7 @@ import ExperienceForm from '../components/ExperienceForm'
 import EducationForm from '../components/EducationForm'
 import ProjectForm from '../components/ProjectForm'
 import SkillsForm from '../components/SkillsForm'
+import MilitaryServiceForm from '../components/MilitaryServiceForm'
 import { useSelector } from 'react-redux'
 import api from '../configs/api'
 import toast from 'react-hot-toast'
@@ -30,6 +31,7 @@ const ResumeBuilder = () => {
     education: [],
     projects: [],
     skills: [],
+    military_service: [],
     template: "classic",
     accent_color: "#3B82F6",
     public: false,
@@ -59,6 +61,7 @@ const ResumeBuilder = () => {
     { id: "education", name: "education", icon: GraduationCap},
     { id: "project", name: "project", icon: FolderIcon},
     { id: "skills", name: "skills", icon: Sparkles},
+    { id: "military", name: "military", icon: Shield},
 
   ]
 
@@ -188,6 +191,9 @@ const ResumeBuilder = () => {
                 )}
                 {activeSection.id == 'skills' && (
                   <SkillsForm data={resumeData.skills} onChange={(data)=> setResumeData(prev=> ({...prev, skills: data}))} />
+                )}
+                {activeSection.id == 'military' && (
+                  <MilitaryServiceForm data={resumeData.military_service} onChange={(data)=> setResumeData(prev=> ({...prev, military_service: data}))} />
                 )}
 
             </div>
