@@ -165,9 +165,10 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                             <h2 className="text-base font-bold text-slate-800 mb-3 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
                                 Recent {data.personal_info?.profession || "Professional"} graduate
                             </h2>
-                            <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-line">
-                                {data.professional_summary}
-                            </p>
+                            <div 
+                                className="text-xs text-gray-700 leading-relaxed whitespace-pre-line"
+                                dangerouslySetInnerHTML={{ __html: data.professional_summary }}
+                            />
                         </section>
                     )}
 
@@ -194,9 +195,10 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                             </div>
                                         </div>
                                         {exp.description && (
-                                            <div className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4">
-                                                {exp.description}
-                                            </div>
+                                            <div 
+                                                className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4"
+                                                dangerouslySetInnerHTML={{ __html: exp.description }}
+                                            />
                                         )}
                                     </div>
                                 ))}

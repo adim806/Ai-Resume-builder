@@ -58,7 +58,10 @@ const ClassicTemplate = ({ data, accentColor }) => {
                     <h2 className="text-xl font-semibold mb-3" style={{ color: accentColor }}>
                         PROFESSIONAL SUMMARY
                     </h2>
-                    <p className="text-gray-700 leading-relaxed">{data.professional_summary}</p>
+                    <div 
+                        className="text-gray-700 leading-relaxed" 
+                        dangerouslySetInnerHTML={{ __html: data.professional_summary }}
+                    />
                 </section>
             )}
 
@@ -82,9 +85,10 @@ const ClassicTemplate = ({ data, accentColor }) => {
                                     </div>
                                 </div>
                                 {exp.description && (
-                                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-                                        {exp.description}
-                                    </div>
+                                    <div 
+                                        className="text-gray-700 leading-relaxed whitespace-pre-line"
+                                        dangerouslySetInnerHTML={{ __html: exp.description }}
+                                    />
                                 )}
                             </div>
                         ))}
