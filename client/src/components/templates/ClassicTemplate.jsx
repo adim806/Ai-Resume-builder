@@ -158,6 +158,37 @@ const ClassicTemplate = ({ data, accentColor }) => {
                     </div>
                 </section>
             )}
+
+            {/* Military Service */}
+            {data.military_service && data.military_service.length > 0 && (
+                <section className="mb-6">
+                    <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
+                        MILITARY SERVICE
+                    </h2>
+
+                    <div className="space-y-4">
+                        {data.military_service.map((service, index) => (
+                            <div key={index} className="border-l-3 pl-4" style={{ borderColor: accentColor }}>
+                                <div className="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900">{service.rank}</h3>
+                                        <p className="text-gray-700 font-medium">{service.unit}</p>
+                                    </div>
+                                    <div className="text-right text-sm text-gray-600">
+                                        <p>{formatDate(service.start_date)} - {service.is_current ? "Present" : formatDate(service.end_date)}</p>
+                                    </div>
+                                </div>
+                                {service.description && (
+                                    <div 
+                                        className="text-gray-700 leading-relaxed whitespace-pre-line"
+                                        dangerouslySetInnerHTML={{ __html: service.description }}
+                                    />
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
         </div>
     );
 }
