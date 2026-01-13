@@ -59,7 +59,10 @@ const ModernTemplate = ({ data, accentColor }) => {
 						<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
 							Professional Summary
 						</h2>
-						<p className="text-gray-700 ">{data.professional_summary}</p>
+						<div 
+							className="text-gray-700" 
+							dangerouslySetInnerHTML={{ __html: data.professional_summary }}
+						/>
 					</section>
 				)}
 
@@ -92,9 +95,10 @@ const ModernTemplate = ({ data, accentColor }) => {
 										</div>
 									</div>
 									{exp.description && (
-										<div className="text-gray-700 leading-relaxed mt-3 whitespace-pre-line">
-											{exp.description}
-										</div>
+										<div 
+											className="text-gray-700 leading-relaxed mt-3 whitespace-pre-line"
+											dangerouslySetInnerHTML={{ __html: exp.description }}
+										/>
 									)}
 								</div>
 							))}

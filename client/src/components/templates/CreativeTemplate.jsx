@@ -179,9 +179,10 @@ const CreativeTemplate = ({ data, accentColor }) => {
                             <h2 className="text-lg font-bold text-gray-900 mb-3 pb-2 border-b-2 border-gray-300">
                                 Summary
                             </h2>
-                            <p className="text-xs text-gray-800 leading-relaxed whitespace-pre-line">
-                                <span className="font-bold">Recent {data.personal_info?.profession || "Software Engineering"} graduate</span> {data.professional_summary}
-                            </p>
+                            <div className="text-xs text-gray-800 leading-relaxed whitespace-pre-line">
+                                <span className="font-bold">Recent {data.personal_info?.profession || "Software Engineering"} graduate</span>{' '}
+                                <span dangerouslySetInnerHTML={{ __html: data.professional_summary }} />
+                            </div>
                         </section>
                     )}
 
@@ -208,9 +209,10 @@ const CreativeTemplate = ({ data, accentColor }) => {
                                             </div>
                                         </div>
                                         {exp.description && (
-                                            <div className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4">
-                                                {exp.description}
-                                            </div>
+                                            <div 
+                                                className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4"
+                                                dangerouslySetInnerHTML={{ __html: exp.description }}
+                                            />
                                         )}
                                     </div>
                                 ))}
