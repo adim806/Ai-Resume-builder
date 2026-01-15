@@ -26,20 +26,22 @@ const ResumePreview = ({data, template, accentColor, classes=''}) => {
         }
     }
   return (
-    <div className='w-full bg-gray-100'>
+    <div className='w-full bg-gray-100  '>
         <div id='resume-preview' className={"border border-gray-200 print:shadow-none print:border-none " + classes}>
           {renderTemplate()}
         </div>
         <style >
             {`
                 @page {
-                size: letter;
+                size: A4;
                 margin: 0;
                 }
                 @media print {
                 html, body {
-                width: 8.5in;
-                height: 11in;
+                width: 210mm;
+                height: 297mm;
+                margin: 0;
+                padding: 0;
                 overflow: hidden;
                 }
                 body *{
@@ -48,16 +50,22 @@ const ResumePreview = ({data, template, accentColor, classes=''}) => {
                 #resume-preview, #resume-preview *{
                 visibility: visible;
                 }
+                .resume-section{
+                  break-inside: avoid;
+                  page-break-inside: avoid;
+                }
                 #resume-preview{
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 100%;
-                height: auto;
+                width: 210mm;
+                min-height: 297mm;
                 margin: 0;
                 padding: 0;
                 box-shadow: none !important;
                 border: none !important;
+
+               
                 }
                 }
             `}
