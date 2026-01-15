@@ -10,54 +10,62 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
         });
     };
 
+    // Icon component with print-friendly fallback
+    const IconWithFallback = ({ IconComponent, unicode, color, size = 14 }) => (
+        <>
+            <IconComponent size={size} className="mt-0.5 flex-shrink-0 print:hidden" style={{ color }} />
+            <span className="hidden print:inline-block mt-0.5 flex-shrink-0 text-sm font-bold" style={{ color }}>{unicode}</span>
+        </>
+    );
+
     return (
-        <div className="max-w-5xl mx-auto bg-white text-zinc-800 h-[11in] ">
+        <div className="max-w-5xl mx-auto bg-white text-zinc-800 h-[297mm] overflow-hidden">
             <div className="grid grid-cols-12 h-full">
                 {/* Left Sidebar - Dark */}
-                <aside className="col-span-4 bg-slate-800 text-white py-7 px-0 flex flex-col">
+                <aside className="col-span-4 bg-slate-800 text-white py-5 px-0 flex flex-col">
                     {/* Profile Image */}
                     {data.personal_info?.image && typeof data.personal_info.image === 'string' ? (
-                        <div className="mb-5 px-6">
+                        <div className="mb-4 px-6">
                             <img 
                                 src={data.personal_info.image} 
                                 alt="Profile" 
-                                className="w-26 h-26 object-cover rounded-full mx-auto border-3 border-white shadow-lg" 
+                                className="w-24 h-24 object-cover rounded-full mx-auto border-2 border-white shadow-lg" 
                             />
                         </div>
                     ) : (
                         data.personal_info?.image && typeof data.personal_info.image === 'object' ? (
-                            <div className="mb-5 px-6">
+                            <div className="mb-4 px-6">
                                 <img 
                                     src={URL.createObjectURL(data.personal_info.image)} 
                                     alt="Profile" 
-                                    className="w-26 h-26 object-cover rounded-full mx-auto border-3 border-white shadow-lg" 
+                                    className="w-24 h-24 object-cover rounded-full mx-auto border-2 border-white shadow-lg" 
                                 />
                             </div>
                         ) : null
                     )}
 
                     {/* Personal Info Section */}
-                    <section className="mb-5 px-6">
-                        <h2 className="text-sm font-bold mb-3 pb-1.5 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
+                    <section className="mb-4 px-6 flex-shrink-0">
+                        <h2 className="text-sm font-bold mb-2.5 pb-1 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
                             Personal Info
                         </h2>
-                        <div className="space-y-2.5 text-xs">
+                        <div className="space-y-2 text-xs">
                             {data.personal_info?.phone && (
                                 <div className="flex items-start gap-2">
-                                    <Phone size={14} className="mt-0.5 flex-shrink-0" style={{ color: accentColor }} />
-                                    <span className="break-words leading-relaxed">{data.personal_info.phone}</span>
+                                    <IconWithFallback IconComponent={Phone} unicode="☎" color={accentColor} />
+                                    <span className="break-words leading-snug">{data.personal_info.phone}</span>
                                 </div>
                             )}
                             {data.personal_info?.email && (
                                 <div className="flex items-start gap-2">
-                                    <Mail size={14} className="mt-0.5 flex-shrink-0" style={{ color: accentColor }} />
-                                    <span className="break-words leading-relaxed">{data.personal_info.email}</span>
+                                    <IconWithFallback IconComponent={Mail} unicode="✉" color={accentColor} />
+                                    <span className="break-words leading-snug">{data.personal_info.email}</span>
                                 </div>
                             )}
                             {data.personal_info?.location && (
                                 <div className="flex items-start gap-2">
-                                    <MapPin size={14} className="mt-0.5 flex-shrink-0" style={{ color: accentColor }} />
-                                    <span className="leading-relaxed">{data.personal_info.location}</span>
+                                    <IconWithFallback IconComponent={MapPin} unicode="📍" color={accentColor} />
+                                    <span className="leading-snug">{data.personal_info.location}</span>
                                 </div>
                             )}
                         </div>
@@ -65,37 +73,25 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
 
                     {/* Links Section */}
                     {(data.personal_info?.linkedin || data.personal_info?.website) && (
-                        <section className="mb-5 px-6">
-                            <h2 className="text-sm font-bold mb-3 pb-1.5 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
+                        <section className="mb-4 px-6 flex-shrink-0">
+                            <h2 className="text-sm font-bold mb-2.5 pb-1 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
                                 Links
                             </h2>
-                            <div className="space-y-2.5 text-xs">
+                            <div className="space-y-2 text-xs">
                                 {data.personal_info?.linkedin && (
                                     <div className="flex items-start gap-2">
-                                        <Linkedin size={14} className="mt-0.5 flex-shrink-0" style={{ color: accentColor }} />
-                                        <a 
-                                            href={data.personal_info.linkedin.startsWith('http') ? data.personal_info.linkedin : `https://${data.personal_info.linkedin}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="truncate underline hover:no-underline leading-relaxed block"
-                                            style={{ color: accentColor }}
-                                        >
-                                            {data.personal_info.linkedin}
-                                        </a>
+                                        <IconWithFallback IconComponent={Linkedin} unicode="🔗" color={accentColor} />
+                                        <span className="break-all leading-snug text-gray-300">
+                                            {data.personal_info.linkedin.replace(/^https?:\/\//, '')}
+                                        </span>
                                     </div>
                                 )}
                                 {data.personal_info?.website && (
                                     <div className="flex items-start gap-2">
-                                        <Globe size={14} className="mt-0.5 flex-shrink-0" style={{ color: accentColor }} />
-                                        <a 
-                                            href={data.personal_info.website.startsWith('http') ? data.personal_info.website : `https://${data.personal_info.website}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="truncate underline hover:no-underline leading-relaxed block"
-                                            style={{ color: accentColor }}
-                                        >
-                                            {data.personal_info.website}
-                                        </a>
+                                        <IconWithFallback IconComponent={Globe} unicode="🌐" color={accentColor} />
+                                        <span className="break-all leading-snug text-gray-300">
+                                            {data.personal_info.website.replace(/^https?:\/\//, '')}
+                                        </span>
                                     </div>
                                 )}
                             </div>
@@ -104,15 +100,15 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
 
                     {/* Skills Section */}
                     {data.skills && data.skills.length > 0 && (
-                        <section className="mb-5 px-6">
-                            <h2 className="text-sm font-bold mb-3 pb-1.5 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
+                        <section className="mb-4 px-6 flex-shrink-0">
+                            <h2 className="text-sm font-bold mb-2.5 pb-1 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
                                 Skills
                             </h2>
-                            <div className="space-y-2">
+                            <div className="space-y-1.5">
                                 {data.skills.map((skill, index) => (
                                     <div key={index} className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: accentColor }}></div>
-                                        <span className="text-xs leading-relaxed">{skill}</span>
+                                        <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: accentColor }}></div>
+                                        <span className="text-xs leading-snug">{skill}</span>
                                     </div>
                                 ))}
                             </div>
@@ -122,21 +118,21 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                     {/* Education Section */}
                     {data.education && data.education.length > 0 && (
                         <section className="flex-shrink-0 px-6">
-                            <h2 className="text-sm font-bold mb-3 pb-1.5 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
+                            <h2 className="text-sm font-bold mb-2.5 pb-1 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
                                 Education
                             </h2>
-                            <div className="space-y-3">
+                            <div className="space-y-2.5">
                                 {data.education.map((edu, index) => (
                                     <div key={index} className="text-xs">
-                                        <h3 className="font-semibold mb-1 leading-snug">
+                                        <h3 className="font-semibold mb-0.5 leading-tight">
                                             {edu.degree} {edu.field && `in ${edu.field}`}
                                         </h3>
-                                        <p className="text-gray-300 mb-1 leading-snug text-[11px]">{edu.institution}</p>
-                                        <p className="text-[11px] text-gray-400 italic leading-snug">
+                                        <p className="text-gray-300 mb-0.5 leading-tight text-[11px]">{edu.institution}</p>
+                                        <p className="text-[11px] text-gray-400 italic leading-tight">
                                             {formatDate(edu.graduation_date)}
                                         </p>
                                         {edu.gpa && (
-                                            <p className="text-[11px] mt-1 leading-snug" style={{ color: accentColor }}>
+                                            <p className="text-[11px] mt-0.5 leading-tight" style={{ color: accentColor }}>
                                                 Average: {edu.gpa}
                                             </p>
                                         )}
@@ -148,10 +144,10 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                 </aside>
 
                 {/* Right Content - Light */}
-                <main className="col-span-8 py-5 px-7 flex flex-col">
+                <main className="col-span-8 py-4 px-6 flex flex-col overflow-hidden">
                     {/* Header */}
-                    <header className="mb-2.5 flex-shrink-0">
-                        <h1 className="text-3xl font-bold mb-1 text-slate-800 leading-tight">
+                    <header className="mb-2 flex-shrink-0">
+                        <h1 className="text-3xl font-bold mb-0.5 text-slate-800 leading-tight">
                             {data.personal_info?.full_name || "Your Name"}
                         </h1>
                         <p className="text-lg font-medium leading-tight" style={{ color: accentColor }}>
@@ -161,12 +157,9 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
 
                     {/* Professional Summary */}
                     {data.professional_summary && (
-                        <section className="mb-2.5 flex-shrink-0">
-                            <h2 className="text-base font-bold text-slate-800 mb-3 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
-                                 
-                            </h2>
+                        <section className="mb-2 flex-shrink-0">
                             <div 
-                                className="text-xs text-gray-700 leading-relaxed whitespace-pre-line"
+                                className="text-xs text-gray-700 leading-snug"
                                 dangerouslySetInnerHTML={{ __html: data.professional_summary }}
                             />
                         </section>
@@ -174,29 +167,29 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
 
                     {/* Work Experience */}
                     {data.experience && data.experience.length > 0 && (
-                        <section className="mb-3 flex-shrink-0">
-                            <h2 className="text-base font-bold text-slate-800 mb-2 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
+                        <section className="mb-2.5 flex-shrink-0">
+                            <h2 className="text-base font-bold text-slate-800 mb-1.5 pb-1 border-b-2 w-full" style={{ borderColor: accentColor }}>
                                 Work Experience
                             </h2>
-                            <div className="space-y-3">
+                            <div className="space-y-2.5">
                                 {data.experience.map((exp, index) => (
-                                    <div key={index}>
+                                    <div key={index} className="break-inside-avoid">
                                         <div className="mb-0.5">
-                                            <h3 className="font-bold text-slate-800 text-sm leading-snug">
+                                            <h3 className="font-bold text-slate-800 text-sm leading-tight">
                                                 {exp.position}
                                             </h3>
-                                            <div className="flex justify-between items-center mt-1">
-                                                <p className="text-sm font-semibold leading-snug" style={{ color: accentColor }}>
+                                            <div className="flex justify-between items-center mt-0.5">
+                                                <p className="text-sm font-semibold leading-tight" style={{ color: accentColor }}>
                                                     {exp.company}
                                                 </p>
-                                                <span className="text-xs text-gray-500 italic leading-snug">
+                                                <span className="text-xs text-gray-500 italic leading-tight whitespace-nowrap ml-2">
                                                     {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
                                                 </span>
                                             </div>
                                         </div>
                                         {exp.description && (
                                             <div 
-                                                className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4"
+                                                className="text-xs text-gray-700 leading-snug ml-3"
                                                 dangerouslySetInnerHTML={{ __html: exp.description }}
                                             />
                                         )}
@@ -208,21 +201,21 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
 
                     {/* Projects */}
                     {data.projects && data.projects.length > 0 && (
-                        <section className="mb-5 flex-shrink-0">
-                            <h2 className="text-base font-bold text-slate-800 mb-3 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
+                        <section className="mb-2.5 flex-shrink-0">
+                            <h2 className="text-base font-bold text-slate-800 mb-1.5 pb-1 border-b-2 w-full" style={{ borderColor: accentColor }}>
                                 Projects
                             </h2>
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                                 {data.projects.map((project, index) => (
-                                    <div key={index}>
-                                        <div className="mb-1">
-                                            <h3 className="font-bold text-slate-800 text-sm leading-snug">{project.name}</h3>
+                                    <div key={index} className="break-inside-avoid">
+                                        <div className="mb-0.5">
+                                            <h3 className="font-bold text-slate-800 text-sm leading-tight">{project.name}</h3>
                                             {project.type && (
-                                                <p className="text-xs italic text-gray-600 leading-snug">{project.type}</p>
+                                                <p className="text-xs italic text-gray-600 leading-tight">{project.type}</p>
                                             )}
                                         </div>
                                         {project.description && (
-                                            <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4">
+                                            <p className="text-xs text-gray-700 leading-snug ml-3">
                                                 {project.description}
                                             </p>
                                         )}
@@ -235,28 +228,28 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                     {/* Military Service */}
                     {data.military_service && data.military_service.length > 0 && (
                         <section className="flex-shrink-0">
-                            <h2 className="text-base font-bold text-slate-800 mb-3 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
+                            <h2 className="text-base font-bold text-slate-800 mb-1.5 pb-1 border-b-2 w-full" style={{ borderColor: accentColor }}>
                                 Military Service
                             </h2>
-                            <div className="space-y-4">
+                            <div className="space-y-2.5">
                                 {data.military_service.map((service, index) => (
-                                    <div key={index}>
-                                        <div className="mb-1.5">
-                                            <h3 className="font-bold text-slate-800 text-sm leading-snug">
+                                    <div key={index} className="break-inside-avoid">
+                                        <div className="mb-0.5">
+                                            <h3 className="font-bold text-slate-800 text-sm leading-tight">
                                                 {service.rank}
                                             </h3>
-                                            <div className="flex justify-between items-center mt-1">
-                                                <p className="text-sm font-semibold leading-snug" style={{ color: accentColor }}>
+                                            <div className="flex justify-between items-center mt-0.5">
+                                                <p className="text-sm font-semibold leading-tight" style={{ color: accentColor }}>
                                                     {service.unit}
                                                 </p>
-                                                <span className="text-xs text-gray-500 italic leading-snug">
+                                                <span className="text-xs text-gray-500 italic leading-tight whitespace-nowrap ml-2">
                                                     {formatDate(service.start_date)} - {service.is_current ? "Present" : formatDate(service.end_date)}
                                                 </span>
                                             </div>
                                         </div>
                                         {service.description && (
                                             <div 
-                                                className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4"
+                                                className="text-xs text-gray-700 leading-snug ml-3"
                                                 dangerouslySetInnerHTML={{ __html: service.description }}
                                             />
                                         )}
@@ -272,4 +265,3 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
 };
 
 export default ProfessionalTemplate;
-

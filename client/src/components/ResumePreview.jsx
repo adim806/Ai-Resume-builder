@@ -43,6 +43,9 @@ const ResumePreview = ({data, template, accentColor, classes=''}) => {
                 margin: 0;
                 padding: 0;
                 overflow: hidden;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                color-adjust: exact;
                 }
                 body *{
                 visibility: hidden;
@@ -59,13 +62,37 @@ const ResumePreview = ({data, template, accentColor, classes=''}) => {
                 left: 0;
                 top: 0;
                 width: 210mm;
-                min-height: 297mm;
+                height: 297mm;
+                max-height: 297mm;
                 margin: 0;
                 padding: 0;
                 box-shadow: none !important;
                 border: none !important;
-
-               
+                overflow: hidden;
+                }
+                
+                /* Hide lucide icons in print and replace with Unicode symbols */
+                #resume-preview svg {
+                  display: none !important;
+                }
+                
+                /* Prevent page breaks inside sections */
+                #resume-preview h2,
+                #resume-preview h3,
+                #resume-preview h4 {
+                  page-break-after: avoid;
+                  break-after: avoid;
+                }
+                
+                #resume-preview p,
+                #resume-preview div {
+                  orphans: 3;
+                  widows: 3;
+                }
+                
+                /* Ensure all content fits */
+                #resume-preview * {
+                  box-sizing: border-box;
                 }
                 }
             `}

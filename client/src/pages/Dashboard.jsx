@@ -157,7 +157,7 @@ const Dashboard = () => {
               {allResumes.map((resume,index)=>{
                 const baseColor = colors[index % colors.length];
                 return (
-                  <button 
+                  <div 
                     key={index} 
                     onClick={()=>navigate(`/app/builder/${resume._id}`)} 
                     className='group relative w-full h-64 flex flex-col items-center justify-center rounded-2xl gap-3 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer overflow-hidden border-2 transform hover:-translate-y-2' 
@@ -211,7 +211,7 @@ const Dashboard = () => {
                         <TrashIcon className='size-4'/>
                       </button>
                     </div>
-                  </button>
+                  </div>
                 )
               })}
             </div>
