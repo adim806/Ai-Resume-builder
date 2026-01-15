@@ -11,7 +11,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto bg-white text-zinc-800 h-[11in] overflow-hidden">
+        <div className="max-w-5xl mx-auto bg-white text-zinc-800 h-[11in] ">
             <div className="grid grid-cols-12 h-full">
                 {/* Left Sidebar - Dark */}
                 <aside className="col-span-4 bg-slate-800 text-white py-7 px-0 flex flex-col">
@@ -150,7 +150,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                 {/* Right Content - Light */}
                 <main className="col-span-8 py-5 px-7 flex flex-col">
                     {/* Header */}
-                    <header className="mb-4 flex-shrink-0">
+                    <header className="mb-2.5 flex-shrink-0">
                         <h1 className="text-3xl font-bold mb-1 text-slate-800 leading-tight">
                             {data.personal_info?.full_name || "Your Name"}
                         </h1>
@@ -161,7 +161,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
 
                     {/* Professional Summary */}
                     {data.professional_summary && (
-                        <section className="mb-5 flex-shrink-0">
+                        <section className="mb-2.5 flex-shrink-0">
                             <h2 className="text-base font-bold text-slate-800 mb-3 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
                                  
                             </h2>
@@ -174,14 +174,14 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
 
                     {/* Work Experience */}
                     {data.experience && data.experience.length > 0 && (
-                        <section className="mb-5 flex-shrink-0">
-                            <h2 className="text-base font-bold text-slate-800 mb-3 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
+                        <section className="mb-3 flex-shrink-0">
+                            <h2 className="text-base font-bold text-slate-800 mb-2 pb-1.5 border-b-2 w-full" style={{ borderColor: accentColor }}>
                                 Work Experience
                             </h2>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 {data.experience.map((exp, index) => (
                                     <div key={index}>
-                                        <div className="mb-1.5">
+                                        <div className="mb-0.5">
                                             <h3 className="font-bold text-slate-800 text-sm leading-snug">
                                                 {exp.position}
                                             </h3>
