@@ -19,10 +19,10 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
     );
 
     return (
-        <div className="max-w-5xl mx-auto bg-white text-zinc-800 h-[297mm] overflow-hidden">
-            <div className="grid grid-cols-12 h-full">
+        <div className="max-w-5xl mx-auto bg-white text-zinc-800 h-[297mm] max-h-[297mm] overflow-hidden">
+            <div className="grid grid-cols-12 h-full max-h-full">
                 {/* Left Sidebar - Dark */}
-                <aside className="col-span-4 bg-slate-800 text-white py-5 px-0 flex flex-col">
+                <aside className="col-span-4 bg-slate-800 text-white py-5 px-0 flex flex-col max-h-full overflow-hidden">
                     {/* Profile Image */}
                     {data.personal_info?.image && typeof data.personal_info.image === 'string' ? (
                         <div className="mb-4 px-6">
@@ -144,7 +144,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                 </aside>
 
                 {/* Right Content - Light */}
-                <main className="col-span-8 py-4 px-6 flex flex-col overflow-hidden">
+                <main className="col-span-8 py-4 px-6 flex flex-col max-h-full overflow-hidden">
                     {/* Header */}
                     <header className="mb-2 flex-shrink-0">
                         <h1 className="text-3xl font-bold mb-0.5 text-slate-800 leading-tight">

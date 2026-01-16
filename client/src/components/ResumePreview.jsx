@@ -26,8 +26,8 @@ const ResumePreview = ({data, template, accentColor, classes=''}) => {
         }
     }
   return (
-    <div className='w-full bg-gray-100  '>
-        <div id='resume-preview' className={"border border-gray-200 print:shadow-none print:border-none " + classes}>
+    <div className='w-full bg-gray-100'>
+        <div id='resume-preview' className={"border border-gray-200 print:shadow-none print:border-none print:h-[297mm] print:max-h-[297mm] print:overflow-hidden " + classes}>
           {renderTemplate()}
         </div>
         <style >
@@ -40,9 +40,9 @@ const ResumePreview = ({data, template, accentColor, classes=''}) => {
                 html, body {
                 width: 210mm;
                 height: 297mm;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 color-adjust: exact;
@@ -58,17 +58,20 @@ const ResumePreview = ({data, template, accentColor, classes=''}) => {
                   page-break-inside: avoid;
                 }
                 #resume-preview{
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 210mm;
-                height: 297mm;
-                max-height: 297mm;
-                margin: 0;
-                padding: 0;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
+                min-height: 297mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
                 box-shadow: none !important;
                 border: none !important;
-                overflow: hidden;
+                overflow: hidden !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
                 }
                 
                 /* Hide lucide icons in print and replace with Unicode symbols */
@@ -80,8 +83,8 @@ const ResumePreview = ({data, template, accentColor, classes=''}) => {
                 #resume-preview h2,
                 #resume-preview h3,
                 #resume-preview h4 {
-                  page-break-after: avoid;
-                  break-after: avoid;
+                  page-break-after: avoid !important;
+                  break-after: avoid !important;
                 }
                 
                 #resume-preview p,
@@ -93,6 +96,17 @@ const ResumePreview = ({data, template, accentColor, classes=''}) => {
                 /* Ensure all content fits */
                 #resume-preview * {
                   box-sizing: border-box;
+                }
+                
+                /* Force single page */
+                @page {
+                  size: A4;
+                  margin: 0;
+                }
+                
+                /* Prevent any content after resume-preview */
+                #resume-preview ~ * {
+                  display: none !important;
                 }
                 }
             `}
