@@ -96,7 +96,29 @@ const ResumeBuilder = () => {
   }
 
   const downLoadResume = ()=>{
+    // Add temporary styles to ensure single page print
+    const style = document.createElement('style');
+    style.textContent = `
+      @media print {
+        @page { 
+          size: A4; 
+          margin: 0; 
+        }
+        html, body { 
+          height: 297mm !important; 
+          max-height: 297mm !important; 
+          overflow: hidden !important; 
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
     window.print();
+    
+    // Remove temporary styles after print
+    setTimeout(() => {
+      document.head.removeChild(style);
+    }, 1000);
   }
 
   const saveResume = async ()=>{
