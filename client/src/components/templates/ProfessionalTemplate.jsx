@@ -10,13 +10,21 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
         });
     };
 
-    // Icon component with print-friendly fallback
-    const IconWithFallback = ({ IconComponent, unicode, color, size = 14 }) => (
-        <>
-            <IconComponent size={size} className="mt-0.5 flex-shrink-0 print:hidden" style={{ color }} />
-            <span className="hidden print:inline-block mt-0.5 flex-shrink-0 text-sm font-bold" style={{ color }}>{unicode}</span>
-        </>
-    );
+    // Icon component with print-friendly fallback and elegant white background
+    const IconWithFallback = ({ IconComponent, unicode, color, size = 12 }) => {
+        return (
+            <>
+                {/* Screen version with elegant white circle */}
+                <div 
+                    className="mt-0.5 flex-shrink-0 print:hidden rounded-full p-1 flex items-center justify-center bg-white shadow-sm" 
+                >
+                    <IconComponent size={size} style={{ color }} strokeWidth={2.5} />
+                </div>
+                {/* Print version with simple emoji */}
+                <span className="hidden print:inline-block mt-0.5 flex-shrink-0 text-sm font-bold" style={{ color }}>{unicode}</span>
+            </>
+        );
+    };
 
     return (
         <div className="max-w-5xl mx-auto bg-white text-zinc-800 h-[297mm] max-h-[297mm] overflow-hidden">
@@ -77,19 +85,19 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                             <h2 className="text-sm font-bold mb-2.5 pb-1 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
                                 Links
                             </h2>
-                            <div className="space-y-2 text-xs">
+                            <div className="space-y-2.5 text-xs">
                                 {data.personal_info?.linkedin && (
-                                    <div className="flex items-start gap-2">
+                                    <div className="flex items-center gap-2">
                                         <IconWithFallback IconComponent={Linkedin} unicode="🔗" color={accentColor} />
-                                        <span className="break-all leading-snug text-gray-300">
+                                        <span className="truncate leading-snug text-gray-300 min-w-0">
                                             {data.personal_info.linkedin.replace(/^https?:\/\//, '')}
                                         </span>
                                     </div>
                                 )}
                                 {data.personal_info?.website && (
-                                    <div className="flex items-start gap-2">
+                                    <div className="flex items-center gap-2">
                                         <IconWithFallback IconComponent={Globe} unicode="🌐" color={accentColor} />
-                                        <span className="break-all leading-snug text-gray-300">
+                                        <span className="truncate leading-snug text-gray-300 min-w-0">
                                             {data.personal_info.website.replace(/^https?:\/\//, '')}
                                         </span>
                                     </div>
