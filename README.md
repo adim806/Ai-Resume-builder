@@ -1,6 +1,7 @@
 # 🚀 AI Powered Resume Builder
 
-![Project Banner](https://via.placeholder.com/1200x400?text=AI+Resume+Builder+Preview)
+[Landing Page]<img width="2551" height="1264" alt="צילום מסך 2026-01-16 141619" src="https://github.com/user-attachments/assets/cfcc605b-8fa6-4d8d-b8d8-1e6195f9171f" />
+
 
 <div align="center">
 
@@ -48,6 +49,19 @@ The application solves the "writer's block" problem by using AI to rewrite conte
 * **AI Integration:** OpenAI SDK (configured for Google Gemini API compatibility)
 * **Storage:** ImageKit (Cloud storage for user avatars)
 * **File Parsing:** PDF-to-Text libraries
+
+<p align="center">
+  <table>
+    <tr>
+      <td>
+        <img src="https://github.com/user-attachments/assets/154973a2-eaed-4c7f-a71d-6a4df0476cdd" height="300px" alt="Screenshot 1" />
+      </td>
+      <td>
+        <img src="https://github.com/user-attachments/assets/07c4c1d8-93e2-4d11-88fe-2f39641de843" height="300px" alt="Screenshot 2" />
+      </td>
+    </tr>
+  </table>
+</p>
 
 ## ⚙️ Environment Variables
 
