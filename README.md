@@ -68,23 +68,21 @@ The application solves the "writer's block" problem by using AI to rewrite conte
 To run this project locally, you need to configure the environment variables.
 Create a `.env` file in the `server` directory and add the following:
 
-```env
-# Server Configuration
-PORT=3000
 
-# Database Connection
-MONGODB_URI=your_mongodb_connection_string
+### 1. Installation
 
-# Authentication
-JWT_SECRET=your_super_secret_key_for_jwt
+```bash
+# Clone the repo
+git clone <your-repo-url>
+cd InterviewPrepAI
 
-# AI Configuration (Google Gemini via OpenAI SDK)
-# Note: We use the OpenAI compatibility layer provided by Google
-OPENAI_API_KEY=your_google_gemini_api_key
-OPENAI_BASE_URL="[https://generativelanguage.googleapis.com/v1beta/openai/](https://generativelanguage.googleapis.com/v1beta/openai/)"
-OPENAI_MODEL="gemini-1.5-flash"
+# Install Backend
+cd backend
+npm install
 
-# Image Storage (ImageKit)
-IMAGEKIT_PUBLIC_KEY=your_public_key
-IMAGEKIT_PRIVATE_KEY=your_private_key
-IMAGEKIT_URL_ENDPOINT=your_url_endpoint
+# Install Frontend
+cd ../frontend/interview-prep-ai
+npm install
+
+# npm run server (backend)
+# npm run dev (frontend)  
