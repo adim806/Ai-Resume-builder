@@ -1,28 +1,68 @@
-import { Loader2, Sparkles } from 'lucide-react'
-import React, { useState } from 'react'
+import { Loader2, Sparkles, Bold, Italic, Underline, List, ListOrdered, AlignLeft, AlignCenter, AlignRight } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import api from '../configs/api'
-
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import UnderlineExtension from '@tiptap/extension-underline'
+import TextAlign from '@tiptap/extension-text-align'
 
 const ProfessionalSummaryForm = ({data, onChange, setResumeData}) => {
 
     const { token } = useSelector(state => state.auth)
     const [isGenerating, setIsGenerating] = useState(false)
 
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            UnderlineExtension,
+            TextAlign.configure({
+                types: ['heading', 'paragraph'],
+            }),
+        ],
+        content: data || '<p>Write a compelling professional summary that highlights your key strengths and career objectives...</p>',
+        onUpdate: ({ editor }) => {
+            const html = editor.getHTML()
+            onChange(html)
+        },
+        editorProps: {
+            attributes: {
+                class: 'prose prose-sm max-w-none focus:outline-none min-h-[150px] p-4',
+            },
+        },
+    })
+
+    // Update editor content when data changes externally (e.g., loading existing resume)
+    useEffect(() => {
+        if (editor && data && editor.getHTML() !== data) {
+            editor.commands.setContent(data)
+        }
+    }, [data, editor])
+
     const generateSummary = async ()=>{
         try {
             console.log("in generateSummary func");
             setIsGenerating(true)
-            const prompt = `enhance my professional summary "${data}"`;
+            const textContent = editor ? editor.getText() : data
+            const prompt = `enhance my professional summary "${textContent}"`;
             const response = await api.post('/api/ai/enhance-pro-sum', {userContent: prompt}, {headers: { Authorization: 'Bearer ' + token }})
-            setResumeData(prev => ({...prev, professional_summary: response.data.enhanceContent}))
+            const enhancedContent = response.data.enhanceContent
+            
+            if (editor) {
+                editor.commands.setContent(`<p>${enhancedContent}</p>`)
+            }
+            setResumeData(prev => ({...prev, professional_summary: enhancedContent}))
             console.log(response);
           } catch (error) {
-            toast.error(error?.response?.data?.message || error.message)
+            console.error(error?.response?.data?.message || error.message)
           }
           finally{
             setIsGenerating(false)
           }
+    }
+
+    if (!editor) {
+        return null
     }
 
   return (
@@ -39,12 +79,80 @@ const ProfessionalSummaryForm = ({data, onChange, setResumeData}) => {
             </button>
         </div>
 
-        <div className='mt-6'>
-            <textarea value={data || ""} onChange={(e)=> onChange(e.target.value)} rows={7} className='w-full p-3 px-4 mt-2 border text-sm border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none' placeholder='Write a compelling professional summary that highlights yout key strengths and career objectives...'/>
-            <p className='text-xs text-gray-500 max-w-4/5 mx-auto text-center'>Tip: keep it concise (3-4 sentences) and focus on your most relevant achievments and skiils.</p>    
+        <div className='mt-6 border border-gray-300 rounded-lg overflow-hidden bg-white'>
+            {/* Toolbar */}
+            <div className='flex items-center gap-1 p-2 border-b border-gray-200 bg-gray-50 flex-wrap'>
+                <button
+                    onClick={() => editor.chain().focus().toggleBold().run()}
+                    className={`p-2 rounded hover:bg-gray-200 transition-colors ${editor.isActive('bold') ? 'bg-gray-300' : ''}`}
+                    title="Bold"
+                >
+                    <Bold className='size-4' />
+                </button>
+                <button
+                    onClick={() => editor.chain().focus().toggleItalic().run()}
+                    className={`p-2 rounded hover:bg-gray-200 transition-colors ${editor.isActive('italic') ? 'bg-gray-300' : ''}`}
+                    title="Italic"
+                >
+                    <Italic className='size-4' />
+                </button>
+                <button
+                    onClick={() => editor.chain().focus().toggleUnderline().run()}
+                    className={`p-2 rounded hover:bg-gray-200 transition-colors ${editor.isActive('underline') ? 'bg-gray-300' : ''}`}
+                    title="Underline"
+                >
+                    <Underline className='size-4' />
+                </button>
 
+                <div className='w-px h-6 bg-gray-300 mx-1'></div>
+
+                <button
+                    onClick={() => editor.chain().focus().toggleBulletList().run()}
+                    className={`p-2 rounded hover:bg-gray-200 transition-colors ${editor.isActive('bulletList') ? 'bg-gray-300' : ''}`}
+                    title="Bullet List"
+                >
+                    <List className='size-4' />
+                </button>
+                <button
+                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                    className={`p-2 rounded hover:bg-gray-200 transition-colors ${editor.isActive('orderedList') ? 'bg-gray-300' : ''}`}
+                    title="Numbered List"
+                >
+                    <ListOrdered className='size-4' />
+                </button>
+
+                <div className='w-px h-6 bg-gray-300 mx-1'></div>
+
+                <button
+                    onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                    className={`p-2 rounded hover:bg-gray-200 transition-colors ${editor.isActive({ textAlign: 'left' }) ? 'bg-gray-300' : ''}`}
+                    title="Align Left"
+                >
+                    <AlignLeft className='size-4' />
+                </button>
+                <button
+                    onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                    className={`p-2 rounded hover:bg-gray-200 transition-colors ${editor.isActive({ textAlign: 'center' }) ? 'bg-gray-300' : ''}`}
+                    title="Align Center"
+                >
+                    <AlignCenter className='size-4' />
+                </button>
+                <button
+                    onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                    className={`p-2 rounded hover:bg-gray-200 transition-colors ${editor.isActive({ textAlign: 'right' }) ? 'bg-gray-300' : ''}`}
+                    title="Align Right"
+                >
+                    <AlignRight className='size-4' />
+                </button>
+            </div>
+
+            {/* Editor Content */}
+            <div className='text-sm text-gray-700'>
+                <EditorContent editor={editor} />
+            </div>
         </div>
 
+        <p className='text-xs text-gray-500 max-w-4/5 mx-auto text-center'>Tip: keep it concise (3-4 sentences) and focus on your most relevant achievements and skills.</p>    
     </div>
   )
 }

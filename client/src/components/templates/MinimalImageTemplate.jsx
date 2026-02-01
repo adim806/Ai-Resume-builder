@@ -92,7 +92,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
 
                     {/* Skills */}
                     {data.skills && data.skills.length > 0 && (
-                        <section>
+                        <section className="mb-8">
                             <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
                                 SKILLS
                             </h2>
@@ -101,6 +101,26 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                                     <li key={index}>{skill}</li>
                                 ))}
                             </ul>
+                        </section>
+                    )}
+
+                    {/* Military Service */}
+                    {data.military_service && data.military_service.length > 0 && (
+                        <section>
+                            <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
+                                MILITARY SERVICE
+                            </h2>
+                            <div className="space-y-4 text-sm">
+                                {data.military_service.map((service, index) => (
+                                    <div key={index}>
+                                        <p className="font-semibold uppercase">{service.rank}</p>
+                                        <p className="text-zinc-600">{service.unit}</p>
+                                        <p className="text-xs text-zinc-500">
+                                            {formatDate(service.start_date)} - {service.is_current ? "Present" : formatDate(service.end_date)}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
                         </section>
                     )}
                 </aside>
@@ -114,9 +134,10 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                             <h2 className="text-sm font-semibold tracking-widest mb-3" style={{ color: accentColor }} >
                                 SUMMARY
                             </h2>
-                            <p className="text-zinc-700 leading-relaxed">
-                                {data.professional_summary}
-                            </p>
+                            <div 
+                                className="text-zinc-700 leading-relaxed" 
+                                dangerouslySetInnerHTML={{ __html: data.professional_summary }}
+                            />
                         </section>
                     )}
 
@@ -142,11 +163,10 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                                             {exp.company}
                                         </p>
                                         {exp.description && (
-                                            <ul className="list-disc list-inside text-sm text-zinc-700 leading-relaxed space-y-1">
-                                                {exp.description.split("\n").map((line, i) => (
-                                                    <li key={i}>{line}</li>
-                                                ))}
-                                            </ul>
+                                            <div 
+                                                className="text-sm text-zinc-700 leading-relaxed"
+                                                dangerouslySetInnerHTML={{ __html: exp.description }}
+                                            />
                                         )}
                                     </div>
                                 ))}
@@ -155,13 +175,13 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                     )}
 
                     {/* Projects */}
-                    {data.project && data.project.length > 0 && (
-                        <section>
+                    {data.projects && data.projects.length > 0 && (
+                        <section className="mb-8">
                             <h2 className="text-sm uppercase tracking-widest font-semibold" style={{ color: accentColor }}>
                                 PROJECTS
                             </h2>
                             <div className="space-y-4">
-                                {data.project.map((project, index) => (
+                                {data.projects.map((project, index) => (
                                     <div key={index}>
                                         <h3 className="text-md font-medium text-zinc-800 mt-3">{project.name}</h3>
                                         <p className="text-sm mb-1" style={{ color: accentColor }} >
@@ -173,6 +193,39 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                                                     <li key={i}>{line}</li>
                                                 ))}
                                             </ul>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Military Service */}
+                    {data.military_service && data.military_service.length > 0 && (
+                        <section>
+                            <h2 className="text-sm font-semibold tracking-widest mb-4" style={{ color: accentColor }} >
+                                MILITARY SERVICE
+                            </h2>
+                            <div className="space-y-6">
+                                {data.military_service.map((service, index) => (
+                                    <div key={index}>
+                                        <div className="flex justify-between items-center">
+                                            <h3 className="font-semibold text-zinc-900">
+                                                {service.rank}
+                                            </h3>
+                                            <span className="text-xs text-zinc-500">
+                                                {formatDate(service.start_date)} -{" "}
+                                                {service.is_current ? "Present" : formatDate(service.end_date)}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm mb-2" style={{ color: accentColor }} >
+                                            {service.unit}
+                                        </p>
+                                        {service.description && (
+                                            <div 
+                                                className="text-sm text-zinc-700 leading-relaxed whitespace-pre-line"
+                                                dangerouslySetInnerHTML={{ __html: service.description }}
+                                            />
                                         )}
                                     </div>
                                 ))}

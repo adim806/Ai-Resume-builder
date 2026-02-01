@@ -33,9 +33,10 @@ const MinimalTemplate = ({ data, accentColor }) => {
             {/* Professional Summary */}
             {data.professional_summary && (
                 <section className="mb-10">
-                    <p className=" text-gray-700">
-                        {data.professional_summary}
-                    </p>
+                    <div 
+                        className="text-gray-700" 
+                        dangerouslySetInnerHTML={{ __html: data.professional_summary }}
+                    />
                 </section>
             )}
 
@@ -57,9 +58,10 @@ const MinimalTemplate = ({ data, accentColor }) => {
                                 </div>
                                 <p className="text-gray-600 mb-2">{exp.company}</p>
                                 {exp.description && (
-                                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-                                        {exp.description}
-                                    </div>
+                                    <div 
+                                        className="text-gray-700 leading-relaxed whitespace-pre-line"
+                                        dangerouslySetInnerHTML={{ __html: exp.description }}
+                                    />
                                 )}
                             </div>
                         ))}
@@ -68,14 +70,14 @@ const MinimalTemplate = ({ data, accentColor }) => {
             )}
 
             {/* Projects */}
-            {data.project && data.project.length > 0 && (
+            {data.projects && data.projects.length > 0 && (
                 <section className="mb-10">
                     <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
                         Projects
                     </h2>
 
                     <div className="space-y-4">
-                        {data.project.map((proj, index) => (
+                        {data.projects.map((proj, index) => (
                             <div key={index} className="flex flex-col gap-2 justify-between items-baseline">
                                 <h3 className="text-lg font-medium ">{proj.name}</h3>
                                 <p className="text-gray-600">{proj.description}</p>
@@ -113,13 +115,42 @@ const MinimalTemplate = ({ data, accentColor }) => {
 
             {/* Skills */}
             {data.skills && data.skills.length > 0 && (
-                <section>
+                <section className="mb-10">
                     <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
                         Skills
                     </h2>
 
                     <div className="text-gray-700">
                         {data.skills.join(" • ")}
+                    </div>
+                </section>
+            )}
+
+            {/* Military Service */}
+            {data.military_service && data.military_service.length > 0 && (
+                <section>
+                    <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
+                        Military Service
+                    </h2>
+
+                    <div className="space-y-6">
+                        {data.military_service.map((service, index) => (
+                            <div key={index}>
+                                <div className="flex justify-between items-baseline mb-1">
+                                    <h3 className="text-lg font-medium">{service.rank}</h3>
+                                    <span className="text-sm text-gray-500">
+                                        {formatDate(service.start_date)} - {service.is_current ? "Present" : formatDate(service.end_date)}
+                                    </span>
+                                </div>
+                                <p className="text-gray-600 mb-2">{service.unit}</p>
+                                {service.description && (
+                                    <div 
+                                        className="text-gray-700 leading-relaxed whitespace-pre-line"
+                                        dangerouslySetInnerHTML={{ __html: service.description }}
+                                    />
+                                )}
+                            </div>
+                        ))}
                     </div>
                 </section>
             )}

@@ -59,7 +59,10 @@ const ModernTemplate = ({ data, accentColor }) => {
 						<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
 							Professional Summary
 						</h2>
-						<p className="text-gray-700 ">{data.professional_summary}</p>
+						<div 
+							className="text-gray-700" 
+							dangerouslySetInnerHTML={{ __html: data.professional_summary }}
+						/>
 					</section>
 				)}
 
@@ -92,9 +95,10 @@ const ModernTemplate = ({ data, accentColor }) => {
 										</div>
 									</div>
 									{exp.description && (
-										<div className="text-gray-700 leading-relaxed mt-3 whitespace-pre-line">
-											{exp.description}
-										</div>
+										<div 
+											className="text-gray-700 leading-relaxed mt-3 whitespace-pre-line"
+											dangerouslySetInnerHTML={{ __html: exp.description }}
+										/>
 									)}
 								</div>
 							))}
@@ -103,14 +107,14 @@ const ModernTemplate = ({ data, accentColor }) => {
 				)}
 
 				{/* Projects */}
-				{data.project && data.project.length > 0 && (
+				{data.projects && data.projects.length > 0 && (
 					<section className="mb-8">
 						<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
 							Projects
 						</h2>
 
 						<div className="space-y-6">
-							{data.project.map((p, index) => (
+							{data.projects.map((p, index) => (
 								<div key={index} className="relative pl-6 border-l border-gray-200" style={{borderLeftColor: accentColor}}>
 
 
@@ -176,6 +180,45 @@ const ModernTemplate = ({ data, accentColor }) => {
 						</section>
 					)}
 				</div>
+
+				{/* Military Service */}
+				{data.military_service && data.military_service.length > 0 && (
+					<section className="mb-8">
+						<h2 className="text-2xl font-light mb-6 pb-2 border-b border-gray-200">
+							Military Service
+						</h2>
+
+						<div className="space-y-6">
+							{data.military_service.map((service, index) => (
+								<div key={index} className="relative pl-6 border-l border-gray-200">
+									<div 
+										className="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full border-2 bg-white z-10 transition-all" 
+										style={{ 
+											borderColor: accentColor,
+											boxShadow: `0 0 0 3px ${accentColor}33`
+										}}
+									></div>
+
+									<div className="flex justify-between items-start mb-2">
+										<div>
+											<h3 className="text-xl font-medium text-gray-900">{service.rank}</h3>
+											<p className="font-medium" style={{ color: accentColor }}>{service.unit}</p>
+										</div>
+										<div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded">
+											{formatDate(service.start_date)} - {service.is_current ? "Present" : formatDate(service.end_date)}
+										</div>
+									</div>
+									{service.description && (
+										<div 
+											className="text-gray-700 leading-relaxed mt-3 whitespace-pre-line"
+											dangerouslySetInnerHTML={{ __html: service.description }}
+										/>
+									)}
+								</div>
+							))}
+						</div>
+					</section>
+				)}
 			</div>
 		</div>
 	);

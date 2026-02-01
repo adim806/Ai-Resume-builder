@@ -1,14 +1,11 @@
-import { Briefcase, Loader2, Plus, Sparkles, Trash2, Bold, Italic, Underline, List, ListOrdered, AlignLeft, AlignCenter, AlignRight } from 'lucide-react'
-import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import api from '../configs/api'
-import toast from 'react-hot-toast'
+import { Shield, Plus, Trash2, Bold, Italic, Underline, List, ListOrdered, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
+import React, { useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import UnderlineExtension from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
 
-// Editor toolbar component for each experience
+// Editor toolbar component for each military service
 const EditorToolbar = ({ editor }) => {
     if (!editor) return null;
 
@@ -88,8 +85,8 @@ const EditorToolbar = ({ editor }) => {
     );
 };
 
-// Individual experience item with its own editor
-const ExperienceItem = ({ experience, index, onUpdate, onRemove, onGenerateDescription, isGenerating }) => {
+// Individual military service item with its own editor
+const MilitaryServiceItem = ({ service, index, onUpdate, onRemove }) => {
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -98,7 +95,7 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, onGenerateDescr
                 types: ['heading', 'paragraph'],
             }),
         ],
-        content: experience.description || '<p>Describe your key responsibilities and achievements...</p>',
+        content: service.description || '<p>Describe your responsibilities and achievements...</p>',
         onUpdate: ({ editor }) => {
             const html = editor.getHTML()
             onUpdate(index, 'description', html)
@@ -110,17 +107,17 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, onGenerateDescr
         },
     });
 
-    // Update editor when description changes externally (e.g., AI enhancement)
+    // Update editor when description changes externally
     useEffect(() => {
-        if (editor && experience.description && editor.getHTML() !== experience.description) {
-            editor.commands.setContent(experience.description)
+        if (editor && service.description && editor.getHTML() !== service.description) {
+            editor.commands.setContent(service.description)
         }
-    }, [experience.description, editor]);
+    }, [service.description, editor]);
 
     return (
         <div className='p-4 border border-gray-200 rounded-lg space-y-3'>
             <div className='flex justify-between items-start'>
-                <h4>Experience #{index + 1}</h4>
+                <h4>Service #{index + 1}</h4>
                 <button 
                     type="button"
                     onClick={() => onRemove(index)} 
@@ -132,33 +129,33 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, onGenerateDescr
 
             <div className='grid md:grid-cols-2 gap-3'>
                 <input 
-                    value={experience.company || ""} 
-                    onChange={(e) => onUpdate(index, "company", e.target.value)} 
+                    value={service.unit || ""} 
+                    onChange={(e) => onUpdate(index, "unit", e.target.value)} 
                     type="text" 
-                    placeholder='Company name' 
+                    placeholder='Unit name' 
                     className='px-3 py-2 text-sm rounded-lg'
                 />
 
                 <input 
-                    value={experience.position || ""} 
-                    onChange={(e) => onUpdate(index, "position", e.target.value)} 
+                    value={service.rank || ""} 
+                    onChange={(e) => onUpdate(index, "rank", e.target.value)} 
                     type="text" 
-                    placeholder='Job title' 
+                    placeholder='Rank/Position' 
                     className='px-3 py-2 text-sm rounded-lg'
                 />
 
                 <input 
-                    value={experience.start_date || ""} 
+                    value={service.start_date || ""} 
                     onChange={(e) => onUpdate(index, "start_date", e.target.value)} 
                     type="month" 
                     className='px-3 py-2 text-sm rounded-lg'
                 />
 
                 <input 
-                    value={experience.end_date || ""} 
+                    value={service.end_date || ""} 
                     onChange={(e) => onUpdate(index, "end_date", e.target.value)} 
                     type="month" 
-                    disabled={experience.is_current} 
+                    disabled={service.is_current} 
                     className='px-3 py-2 text-sm rounded-lg disabled:bg-gray-100'
                 />
             </div>
@@ -166,31 +163,15 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, onGenerateDescr
             <label className='flex items-center gap-2'>
                 <input 
                     type="checkbox" 
-                    checked={experience.is_current || false} 
+                    checked={service.is_current || false} 
                     onChange={(e) => onUpdate(index, "is_current", e.target.checked)} 
                     className='rounded border-gray-300 text-blue-600 focus:ring focus:ring-blue-500 outline-none'
                 />
-                <span className='text-sm text-gray-700'>Currently working here</span>
+                <span className='text-sm text-gray-700'>Currently serving</span>
             </label>
 
             <div className='space-y-2'>
-                <div className='flex items-center justify-between'>
-                    <label className='text-sm font-medium text-gray-700'>Job Description</label>
-                    <button 
-                        type="button"
-                        onClick={() => onGenerateDescription(index)} 
-                        disabled={isGenerating || !experience.position || !experience.company} 
-                        className='flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disabled:opacity-50'
-                    >
-                        {isGenerating ? (
-                            <Loader2 className='w-3 h-3 animate-spin'/>
-                        ) : (
-                            <Sparkles className='w-3 h-3' />
-                        )}
-                        Enhance with AI
-                    </button>
-                </div>
-
+                <label className='text-sm font-medium text-gray-700'>Description</label>
                 <div className='border border-gray-300 rounded-lg overflow-hidden bg-white'>
                     <EditorToolbar editor={editor} />
                     <div className='text-sm text-gray-700'>
@@ -202,100 +183,60 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, onGenerateDescr
     );
 };
 
+const MilitaryServiceForm = ({data = [], onChange}) => {
 
-const ExperienceForm = ({data, onChange}) => {
-
-    const { token } = useSelector(state => state.auth)
-    const [generatingIndex, setGeneratingIndex] = useState(-1)
-
-    const addExperience = () =>{
-
-        const newExperience = {
-            company: "",
-            position: "",
+    const addMilitaryService = () =>{
+        const newMilitaryService = {
+            unit: "",
+            rank: "",
             start_date: "",
             end_date: "",
             description: "",
             is_current: false
-
         };
-        onChange([...data, newExperience])
+        onChange([...data, newMilitaryService])
     }
 
-    const removeExperience = (index) =>{
+    const removeMilitaryService = (index) =>{
         const updated = data.filter((_, i)=> i !==index);
         onChange(updated)
     }
 
-    const updateExperience = (index, field, value) =>{
+    const updateMilitaryService = (index, field, value) =>{
         const updated = [...data];
         updated[index] = {...updated[index], [field]: value}
         onChange(updated)
     }
-
-    const generatDescription = async (index) =>{
-        console.log("in generatDescription func");
-
-        setGeneratingIndex(index)
-        const experience = data[index]
-        
-        // Extract plain text from HTML if it's HTML, otherwise use as is
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = experience.description || '';
-        const textContent = tempDiv.textContent || tempDiv.innerText || experience.description || '';
-        
-        const prompt = `enhance this job description "${textContent}" for position of ${experience.position} at ${experience.company}.`
-        
-        try {
-            const response = await api.post('/api/ai/enhance-job-desc', {userContent: prompt}, {headers: { Authorization: 'Bearer ' + token }})
-            console.log(response);
-
-            // Wrap the AI response in a paragraph tag for proper HTML formatting
-            updateExperience(index, "description", `<p>${response.data.enhanceContent}</p>`)
-        } catch (error) {
-            toast.error(error?.response?.data?.message || error.message)
-        } finally {
-            setGeneratingIndex(-1)
-        }
-    }
-
-
 
   return (
     <div className='space-y-6'>
        
         <div className='flex items-center justify-between'>
             <div>
-                <h3 className='flex items-center gap-2 text-lg font-semibold text-gray-900'> Professional Experience </h3>
-                <p className='text-sm text-gray-500'>Add your job experience</p>
+                <h3 className='flex items-center gap-2 text-lg font-semibold text-gray-900'> Military Service </h3>
+                <p className='text-sm text-gray-500'>Add your military service details</p>
             </div>
-            <button 
-                type="button"
-                onClick={addExperience} 
-                className='flex items-center gap-2 px-3 py-1 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors'
-            >
+            <button onClick={addMilitaryService} className='flex items-center gap-2 px-3 py-1 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors'>
                 <Plus className='size-4' />
-                Add Experience
+                Add Service
             </button>
         </div>
 
         {data.length === 0 ? (
             <div className='text-center py-8 text-gray-500'>
-                <Briefcase className='w-12 h-12 mx-auto mb-3 text-gray-300'/>
-                <p>No work experience added yet.</p>
-                <p className='text-sm'>Click "Add Experience" to get started.</p>
+                <Shield className='w-12 h-12 mx-auto mb-3 text-gray-300'/>
+                <p>No military service added yet.</p>
+                <p className='text-sm'>Click "Add Service" to get started.</p>
             </div>
         ) : (
             <div className='space-y-4'>
-                {data.map((experience, index) => (
-                    <ExperienceItem
+                {data.map((service, index) => (
+                    <MilitaryServiceItem
                         key={index}
-                        experience={experience}
+                        service={service}
                         index={index}
-                        onUpdate={updateExperience}
-                        onRemove={removeExperience}
-                        onGenerateDescription={generatDescription}
-                        isGenerating={generatingIndex === index}
+                        onUpdate={updateMilitaryService}
+                        onRemove={removeMilitaryService}
                     />
                 ))}
             </div>
@@ -305,4 +246,5 @@ const ExperienceForm = ({data, onChange}) => {
   )
 }
 
-export default ExperienceForm
+export default MilitaryServiceForm
+

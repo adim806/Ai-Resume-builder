@@ -58,7 +58,10 @@ const ClassicTemplate = ({ data, accentColor }) => {
                     <h2 className="text-xl font-semibold mb-3" style={{ color: accentColor }}>
                         PROFESSIONAL SUMMARY
                     </h2>
-                    <p className="text-gray-700 leading-relaxed">{data.professional_summary}</p>
+                    <div 
+                        className="text-gray-700 leading-relaxed" 
+                        dangerouslySetInnerHTML={{ __html: data.professional_summary }}
+                    />
                 </section>
             )}
 
@@ -82,9 +85,10 @@ const ClassicTemplate = ({ data, accentColor }) => {
                                     </div>
                                 </div>
                                 {exp.description && (
-                                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-                                        {exp.description}
-                                    </div>
+                                    <div 
+                                        className="text-gray-700 leading-relaxed whitespace-pre-line"
+                                        dangerouslySetInnerHTML={{ __html: exp.description }}
+                                    />
                                 )}
                             </div>
                         ))}
@@ -93,14 +97,14 @@ const ClassicTemplate = ({ data, accentColor }) => {
             )}
 
             {/* Projects */}
-            {data.project && data.project.length > 0 && (
+            {data.projects && data.projects.length > 0 && (
                 <section className="mb-6">
                     <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
                         PROJECTS
                     </h2>
 
                     <ul className="space-y-3 ">
-                        {data.project.map((proj, index) => (
+                        {data.projects.map((proj, index) => (
                             <div key={index} className="flex justify-between items-start border-l-3 border-gray-300 pl-6">
                                 <div>
                                     <li className="font-semibold text-gray-800 ">{proj.name}</li>
@@ -149,6 +153,37 @@ const ClassicTemplate = ({ data, accentColor }) => {
                         {data.skills.map((skill, index) => (
                             <div key={index} className="text-gray-700">
                                 • {skill}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* Military Service */}
+            {data.military_service && data.military_service.length > 0 && (
+                <section className="mb-6">
+                    <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
+                        MILITARY SERVICE
+                    </h2>
+
+                    <div className="space-y-4">
+                        {data.military_service.map((service, index) => (
+                            <div key={index} className="border-l-3 pl-4" style={{ borderColor: accentColor }}>
+                                <div className="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900">{service.rank}</h3>
+                                        <p className="text-gray-700 font-medium">{service.unit}</p>
+                                    </div>
+                                    <div className="text-right text-sm text-gray-600">
+                                        <p>{formatDate(service.start_date)} - {service.is_current ? "Present" : formatDate(service.end_date)}</p>
+                                    </div>
+                                </div>
+                                {service.description && (
+                                    <div 
+                                        className="text-gray-700 leading-relaxed whitespace-pre-line"
+                                        dangerouslySetInnerHTML={{ __html: service.description }}
+                                    />
+                                )}
                             </div>
                         ))}
                     </div>

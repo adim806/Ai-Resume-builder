@@ -39,6 +39,14 @@ const ResumeSchema = new mongoose.Schema({
         gpa: {type: String},
 
     }],
+    military_service: [{
+        unit: {type: String, default: ""},
+        rank: {type: String, default: ""},
+        start_date: {type: String, default: ""},
+        end_date: {type: String, default: ""},
+        description: {type: String, default: ""},
+        is_current: {type: Boolean},
+    }],
 }, {timestamps: true, minimize: false})
 
 const Resume = mongoose.model("Resume", ResumeSchema)
