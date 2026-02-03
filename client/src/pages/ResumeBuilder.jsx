@@ -15,6 +15,8 @@ import MilitaryServiceForm from '../components/MilitaryServiceForm'
 import { useSelector } from 'react-redux'
 import api from '../configs/api'
 import toast from 'react-hot-toast'
+import { pdf } from '@react-pdf/renderer'
+import { getPDFTemplate } from '../components/pdf-templates'
 
 const ResumeBuilder = () => {
 
@@ -95,30 +97,38 @@ const ResumeBuilder = () => {
     }
   }
 
-  const downLoadResume = ()=>{
-    // Add temporary styles to ensure single page print
-    const style = document.createElement('style');
-    style.textContent = `
-      @media print {
-        @page { 
-          size: A4; 
-          margin: 0; 
-        }
-        html, body { 
-          height: 297mm !important; 
-          max-height: 297mm !important; 
-          overflow: hidden !important; 
-        }
-      }
-    `;
-    document.head.appendChild(style);
-    
-    window.print();
-    
-    // Remove temporary styles after print
-    setTimeout(() => {
-      document.head.removeChild(style);
-    }, 1000);
+  const downLoadResume = async () => {
+    try {
+      toast.loading('Generating PDF...');
+      
+      // Get the appropriate PDF template component
+      const PDFTemplate = getPDFTemplate(resumeData.template);
+      
+      // Create the PDF document
+      const doc = <PDFTemplate data={resumeData} accentColor={resumeData.accent_color} />;
+      
+      // Generate the PDF blob
+      const blob = await pdf(doc).toBlob();
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${resumeData.title || 'resume'}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      URL.revokeObjectURL(url);
+      
+      toast.dismiss();
+      toast.success('PDF downloaded successfully!');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast.dismiss();
+      toast.error('Failed to generate PDF. Please try again.');
+    }
   }
 
   const saveResume = async ()=>{
