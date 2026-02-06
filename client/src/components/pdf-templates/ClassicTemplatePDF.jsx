@@ -20,26 +20,46 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
         });
     };
 
-    // Enhanced HTML parsing with better formatting preservation
+    // Enhanced HTML parsing with better formatting preservation and whitespace control
     const parseHtmlContent = (html) => {
         if (!html) return [];
         
         let content = html;
         
-        // Preserve list structure with minimal indentation
-        content = content.replace(/<li[^>]*>/gi, '\n• ');
-        content = content.replace(/<\/li>/gi, '');
-        content = content.replace(/<ul[^>]*>/gi, '\n');
-        content = content.replace(/<\/ul>/gi, '\n');
-        content = content.replace(/<ol[^>]*>/gi, '\n');
-        content = content.replace(/<\/ol>/gi, '\n');
+        // Step 1: Normalize whitespace before processing tags
+        content = content.trim();
         
-        // Handle paragraphs and breaks with proper spacing
+        // Step 2: Handle list structures - use placeholder to control spacing precisely
+        content = content.replace(/<ul[^>]*>/gi, '|||UL_START|||');
+        content = content.replace(/<\/ul>/gi, '|||UL_END|||');
+        content = content.replace(/<ol[^>]*>/gi, '|||OL_START|||');
+        content = content.replace(/<\/ol>/gi, '|||OL_END|||');
+        content = content.replace(/<li[^>]*>/gi, '|||LI|||');
+        content = content.replace(/<\/li>/gi, '');
+        
+        // Step 3: Handle paragraphs and breaks
         content = content.replace(/<br\s*\/?>/gi, '\n');
         content = content.replace(/<\/p>/gi, '\n');
         content = content.replace(/<p[^>]*>/gi, '');
         
-        // Parse with formatting tags
+        // Step 4: Convert placeholders to actual formatting with controlled spacing
+        content = content.replace(/\|\|\|UL_START\|\|\|/g, '');
+        content = content.replace(/\|\|\|UL_END\|\|\|/g, '');
+        content = content.replace(/\|\|\|OL_START\|\|\|/g, '');
+        content = content.replace(/\|\|\|OL_END\|\|\|/g, '');
+        content = content.replace(/\|\|\|LI\|\|\|/g, '\n• ');
+        
+        // Step 5: Clean up excessive newlines and whitespace
+        // Replace multiple consecutive newlines with maximum of 2
+        content = content.replace(/\n{3,}/g, '\n\n');
+        // Trim leading/trailing newlines
+        content = content.replace(/^\n+/, '');
+        content = content.replace(/\n+$/, '');
+        // Clean up spaces around newlines
+        content = content.replace(/[ \t]+\n/g, '\n');
+        content = content.replace(/\n[ \t]+/g, '\n');
+        
+        // Step 6: Parse with formatting tags
         const tagRegex = /(<strong[^>]*>|<\/strong>|<b[^>]*>|<\/b>|<em[^>]*>|<\/em>|<i[^>]*>|<\/i>|<u[^>]*>|<\/u>)/gi;
         const parts = content.split(tagRegex);
         
@@ -62,7 +82,7 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
             } else if (lowerPart === '</u>') {
                 formatStack.underline = false;
             } else if (part && !part.startsWith('<')) {
-                // Clean text content
+                // Clean text content and HTML entities
                 const cleanText = part
                     .replace(/<[^>]+>/g, '')
                     .replace(/&nbsp;/g, ' ')
@@ -70,9 +90,10 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
                     .replace(/&lt;/g, '<')
                     .replace(/&gt;/g, '>')
                     .replace(/&quot;/g, '"')
-                    .replace(/&#39;/g, "'");
+                    .replace(/&#39;/g, "'")
+                    .replace(/[ \t]+/g, ' '); // Normalize internal spaces
                 
-                if (cleanText) {
+                if (cleanText.trim()) {
                     segments.push({
                         text: cleanText,
                         bold: formatStack.bold,
@@ -430,13 +451,13 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
                             <View key={index} style={styles.educationItem}>
                                 <View>
                                     <Text style={styles.degree}>
-                                        {edu.degree} {edu.field && `in ${edu.field}`}
+                                        {edu.degree}
                                     </Text>
                                     <Text style={styles.institution}>{edu.institution}</Text>
                                     {edu.gpa && <Text style={styles.gpa}>GPA: {edu.gpa}</Text>}
                                 </View>
                                 <View>
-                                    <Text style={styles.dateRange}>{formatDate(edu.graduation_date)}</Text>
+                                    <Text style={styles.dateRange}>{edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}</Text>
                                 </View>
                             </View>
                         ))}

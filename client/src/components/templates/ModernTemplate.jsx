@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Github, Globe } from "lucide-react";
 
 const ModernTemplate = ({ data, accentColor }) => {
 	const formatDate = (dateStr) => {
@@ -41,6 +41,12 @@ const ModernTemplate = ({ data, accentColor }) => {
 						<a target="_blank" href={data.personal_info?.linkedin} className="flex items-center gap-2">
 							<Linkedin className="size-4" />
 							<span className="break-all text-xs">{data.personal_info.linkedin.split("https://www.")[1] ? data.personal_info.linkedin.split("https://www.")[1] : data.personal_info.linkedin}</span>
+						</a>
+					)}
+					{data.personal_info?.github && (
+						<a target="_blank" href={data.personal_info?.github} className="flex items-center gap-2">
+							<Github className="size-4" />
+							<span className="break-all text-xs">{data.personal_info.github.split("https://")[1] ? data.personal_info.github.split("https://")[1] : data.personal_info.github}</span>
 						</a>
 					)}
 					{data.personal_info?.website && (
@@ -146,11 +152,11 @@ const ModernTemplate = ({ data, accentColor }) => {
 								{data.education.map((edu, index) => (
 									<div key={index}>
 										<h3 className="font-semibold text-gray-900">
-											{edu.degree} {edu.field && `in ${edu.field}`}
+											{edu.degree}
 										</h3>
 										<p style={{ color: accentColor }}>{edu.institution}</p>
 										<div className="flex justify-between items-center text-sm text-gray-600">
-											<span>{formatDate(edu.graduation_date)}</span>
+											<span>{edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}</span>
 											{edu.gpa && <span>GPA: {edu.gpa}</span>}
 										</div>
 									</div>

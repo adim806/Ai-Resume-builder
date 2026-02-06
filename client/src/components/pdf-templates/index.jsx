@@ -23,3 +23,4 @@ const getPDFTemplate = (templateName) => {
 
 export { getPDFTemplate, ProfessionalTemplatePDF, ClassicTemplatePDF };
 
+

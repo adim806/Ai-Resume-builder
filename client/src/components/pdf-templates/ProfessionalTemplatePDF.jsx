@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Image, Font, Svg, Path, Circle, Rect, Line } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image, Font, Svg, Path, Circle, Rect, Line, Link } from '@react-pdf/renderer';
 
 // Register fonts for better rendering (optional - using default for now)
 // Font.register({ family: 'Inter', src: 'path-to-font.ttf' });
@@ -31,13 +31,13 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
         },
         leftSidebar: {
             width: '33.33%',
-            backgroundColor: '#1e293b', // slate-800
+            backgroundColor: '#0f172a', // slate-900 (darker)
             color: '#ffffff',
             padding: '20 24',
         },
         rightContent: {
             width: '66.67%',
-            padding: '16 24',
+            padding: '20 24',
         },
         profileImage: {
             width: 80,
@@ -48,14 +48,18 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             border: '2px solid #ffffff',
         },
         sectionTitle: {
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: 'bold',
             marginBottom: 10,
             paddingBottom: 4,
             borderBottom: `2px solid ${accentColor}`,
+            marginLeft: -24,
+            marginRight: -24,
+            paddingLeft: 24,
+            paddingRight: 24,
         },
         sectionTitleLeft: {
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: 'bold',
             marginBottom: 10,
             paddingBottom: 4,
@@ -75,22 +79,22 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             fontSize: 9,
         },
         iconContainer: {
-            width: 18,
-            height: 18,
-            marginRight: 10,
+            width: 16,
+            height: 16,
+            marginRight: 8,
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: '#ffffff',
             borderRadius: 8,
-            padding: 3,
+            padding: 2.5,
         },
         textSmall: {
-            fontSize: 9,
+            fontSize: 10,
             lineHeight: 1.4,
             color: '#ffffff',
         },
         textGray: {
-            fontSize: 9,
+            fontSize: 10,
             lineHeight: 1.4,
             color: '#d1d5db',
         },
@@ -107,11 +111,11 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             marginBottom: 6,
         },
         skillText: {
-            fontSize: 9,
+            fontSize: 11,
             color: '#ffffff',
         },
         headerName: {
-            fontSize: 24,
+            fontSize: 26,
             fontWeight: 'bold',
             marginBottom: 4,
             color: '#1e293b',
@@ -123,8 +127,8 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             marginBottom: 8,
         },
         summary: {
-            fontSize: 9,
-            lineHeight: 1.5,
+            fontSize: 10,
+            lineHeight: 1.6,
             color: '#374151',
             marginBottom: 10,
             textAlign: 'left',
@@ -151,62 +155,82 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             marginBottom: 2,
         },
         description: {
-            fontSize: 9,
-            lineHeight: 1.4,
+            fontSize: 10,
+            lineHeight: 1.6,
             color: '#374151',
             marginLeft: 12,
-            marginTop: 2,
+            marginTop: 3,
             textAlign: 'left',
         },
         experienceItem: {
-            marginBottom: 6,
+            marginBottom: 14,
         },
         educationItem: {
             marginBottom: 10,
         },
         educationDegree: {
-            fontSize: 9,
+            fontSize: 10,
             fontWeight: 'bold',
             color: '#ffffff',
             marginBottom: 2,
         },
         educationInstitution: {
-            fontSize: 8,
+            fontSize: 9,
             color: '#d1d5db',
             marginBottom: 2,
         },
         educationDate: {
-            fontSize: 8,
+            fontSize: 9,
             color: '#9ca3af',
             fontStyle: 'italic',
         },
         educationGpa: {
-            fontSize: 8,
+            fontSize: 9,
             color: accentColor,
             marginTop: 2,
         },
     });
 
-    // Enhanced HTML parsing with better formatting preservation
+    // Enhanced HTML parsing with better formatting preservation and whitespace control
     const parseHtmlContent = (html) => {
         if (!html) return [];
         
         let content = html;
         
-        // Preserve list structure with minimal indentation
-        content = content.replace(/<li[^>]*>/gi, '\n• ');
-        content = content.replace(/<\/li>/gi, '');
-        content = content.replace(/<ul[^>]*>/gi, '\n');
-        content = content.replace(/<\/ul>/gi, '\n');
-        content = content.replace(/<ol[^>]*>/gi, '\n');
-        content = content.replace(/<\/ol>/gi, '\n');
+        // Step 1: Normalize whitespace before processing tags
+        content = content.trim();
         
-        // Handle paragraphs and breaks with proper spacing
+        // Step 2: Handle list structures - use placeholder to control spacing precisely
+        content = content.replace(/<ul[^>]*>/gi, '|||UL_START|||');
+        content = content.replace(/<\/ul>/gi, '|||UL_END|||');
+        content = content.replace(/<ol[^>]*>/gi, '|||OL_START|||');
+        content = content.replace(/<\/ol>/gi, '|||OL_END|||');
+        content = content.replace(/<li[^>]*>/gi, '|||LI|||');
+        content = content.replace(/<\/li>/gi, '');
+        
+        // Step 3: Handle paragraphs and breaks
         content = content.replace(/<br\s*\/?>/gi, '\n');
         content = content.replace(/<\/p>/gi, '\n');
         content = content.replace(/<p[^>]*>/gi, '');
         
-        // Parse with formatting tags
+        // Step 4: Convert placeholders to actual formatting with controlled spacing
+        content = content.replace(/\|\|\|UL_START\|\|\|/g, '');
+        content = content.replace(/\|\|\|UL_END\|\|\|/g, '');
+        content = content.replace(/\|\|\|OL_START\|\|\|/g, '');
+        content = content.replace(/\|\|\|OL_END\|\|\|/g, '');
+        content = content.replace(/\|\|\|LI\|\|\|/g, '\n• ');
+        
+        // Step 5: Clean up excessive newlines and whitespace
+        // Replace multiple consecutive newlines with maximum of 2
+        content = content.replace(/\n{3,}/g, '\n\n');
+        // Trim leading/trailing newlines
+        content = content.replace(/^\n+/, '');
+        content = content.replace(/\n+$/, '');
+        // Clean up spaces around newlines
+        content = content.replace(/[ \t]+\n/g, '\n');
+        content = content.replace(/\n[ \t]+/g, '\n');
+        
+        // Step 6: Parse with formatting tags
         const tagRegex = /(<strong[^>]*>|<\/strong>|<b[^>]*>|<\/b>|<em[^>]*>|<\/em>|<i[^>]*>|<\/i>|<u[^>]*>|<\/u>)/gi;
         const parts = content.split(tagRegex);
         
@@ -229,7 +253,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             } else if (lowerPart === '</u>') {
                 formatStack.underline = false;
             } else if (part && !part.startsWith('<')) {
-                // Clean text content
+                // Clean text content and HTML entities
                 const cleanText = part
                     .replace(/<[^>]+>/g, '')
                     .replace(/&nbsp;/g, ' ')
@@ -237,9 +261,10 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                     .replace(/&lt;/g, '<')
                     .replace(/&gt;/g, '>')
                     .replace(/&quot;/g, '"')
-                    .replace(/&#39;/g, "'");
+                    .replace(/&#39;/g, "'")
+                    .replace(/[ \t]+/g, ' '); // Normalize internal spaces
                 
-                if (cleanText) {
+                if (cleanText.trim()) {
                     segments.push({
                         text: cleanText,
                         bold: formatStack.bold,
@@ -255,7 +280,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
 
     // Icon Components
     const PhoneIcon = () => (
-        <Svg width="14" height="14" viewBox="0 0 24 24">
+        <Svg width="11" height="11" viewBox="0 0 24 24">
             <Path
                 d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"
                 fill={accentColor}
@@ -264,7 +289,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
     );
 
     const EmailIcon = () => (
-        <Svg width="14" height="14" viewBox="0 0 24 24">
+        <Svg width="11" height="11" viewBox="0 0 24 24">
             <Path
                 d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
                 fill={accentColor}
@@ -273,7 +298,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
     );
 
     const LocationIcon = () => (
-        <Svg width="14" height="14" viewBox="0 0 24 24">
+        <Svg width="11" height="11" viewBox="0 0 24 24">
             <Path
                 d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
                 fill={accentColor}
@@ -282,7 +307,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
     );
 
     const LinkedInIcon = () => (
-        <Svg width="14" height="14" viewBox="0 0 24 24">
+        <Svg width="11" height="11" viewBox="0 0 24 24">
             <Path
                 d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
                 fill={accentColor}
@@ -291,9 +316,18 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
     );
 
     const WebsiteIcon = () => (
-        <Svg width="14" height="14" viewBox="0 0 24 24">
+        <Svg width="11" height="11" viewBox="0 0 24 24">
             <Path
                 d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+                fill={accentColor}
+            />
+        </Svg>
+    );
+
+    const GitHubIcon = () => (
+        <Svg width="11" height="11" viewBox="0 0 24 24">
+            <Path
+                d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"
                 fill={accentColor}
             />
         </Svg>
@@ -400,30 +434,47 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                     </View>
 
                     {/* Links Section */}
-                    {(data.personal_info?.linkedin || data.personal_info?.website) && (
+                    {(data.personal_info?.linkedin || data.personal_info?.website || data.personal_info?.github) && (
                         <View style={styles.section}>
                             <Text style={styles.sectionTitleLeft}>Links</Text>
                             
                             {data.personal_info?.linkedin && (
-                                <View style={styles.iconRow}>
-                                    <View style={styles.iconContainer}>
-                                        <LinkedInIcon />
+                                <Link src={data.personal_info.linkedin} style={{ textDecoration: 'none' }}>
+                                    <View style={styles.iconRow}>
+                                        <View style={styles.iconContainer}>
+                                            <LinkedInIcon />
+                                        </View>
+                                        <Text style={styles.textGray}>
+                                            {data.personal_info.linkedin.replace(/^https?:\/\//, '')}
+                                        </Text>
                                     </View>
-                                    <Text style={styles.textGray}>
-                                        {data.personal_info.linkedin.replace(/^https?:\/\//, '')}
-                                    </Text>
-                                </View>
+                                </Link>
+                            )}
+                            
+                            {data.personal_info?.github && (
+                                <Link src={data.personal_info.github} style={{ textDecoration: 'none' }}>
+                                    <View style={styles.iconRow}>
+                                        <View style={styles.iconContainer}>
+                                            <GitHubIcon />
+                                        </View>
+                                        <Text style={styles.textGray}>
+                                            {data.personal_info.github.replace(/^https?:\/\//, '')}
+                                        </Text>
+                                    </View>
+                                </Link>
                             )}
                             
                             {data.personal_info?.website && (
-                                <View style={styles.iconRow}>
-                                    <View style={styles.iconContainer}>
-                                        <WebsiteIcon />
+                                <Link src={data.personal_info.website} style={{ textDecoration: 'none' }}>
+                                    <View style={styles.iconRow}>
+                                        <View style={styles.iconContainer}>
+                                            <WebsiteIcon />
+                                        </View>
+                                        <Text style={styles.textGray}>
+                                            {data.personal_info.website.replace(/^https?:\/\//, '')}
+                                        </Text>
                                     </View>
-                                    <Text style={styles.textGray}>
-                                        {data.personal_info.website.replace(/^https?:\/\//, '')}
-                                    </Text>
-                                </View>
+                                </Link>
                             )}
                         </View>
                     )}
@@ -448,11 +499,11 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                             {data.education.map((edu, index) => (
                                 <View key={index} style={styles.educationItem}>
                                     <Text style={styles.educationDegree}>
-                                        {edu.degree} {edu.field && `in ${edu.field}`}
+                                        {edu.degree}
                                     </Text>
                                     <Text style={styles.educationInstitution}>{edu.institution}</Text>
                                     <Text style={styles.educationDate}>
-                                        {formatDate(edu.graduation_date)}
+                                        {edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}
                                     </Text>
                                     {edu.gpa && (
                                         <Text style={styles.educationGpa}>

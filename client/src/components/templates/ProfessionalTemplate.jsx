@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Github, Globe } from "lucide-react";
 
 const ProfessionalTemplate = ({ data, accentColor }) => {
     const formatDate = (dateStr) => {
@@ -64,7 +64,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                     </section>
 
                     {/* Links Section */}
-                    {(data.personal_info?.linkedin || data.personal_info?.website) && (
+                    {(data.personal_info?.linkedin || data.personal_info?.github || data.personal_info?.website) && (
                         <section className="mb-5 px-6">
                             <h2 className="text-sm font-bold mb-3 pb-1.5 border-b-2 -mx-6 px-6" style={{ borderColor: accentColor }}>
                                 Links
@@ -81,6 +81,20 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                             style={{ color: accentColor }}
                                         >
                                             {data.personal_info.linkedin}
+                                        </a>
+                                    </div>
+                                )}
+                                {data.personal_info?.github && (
+                                    <div className="flex items-start gap-2">
+                                        <Github size={14} className="mt-0.5 flex-shrink-0" style={{ color: accentColor }} />
+                                        <a 
+                                            href={data.personal_info.github.startsWith('http') ? data.personal_info.github : `https://${data.personal_info.github}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="truncate underline hover:no-underline leading-relaxed block"
+                                            style={{ color: accentColor }}
+                                        >
+                                            {data.personal_info.github}
                                         </a>
                                     </div>
                                 )}
@@ -129,11 +143,11 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                 {data.education.map((edu, index) => (
                                     <div key={index} className="text-xs">
                                         <h3 className="font-semibold mb-1 leading-snug">
-                                            {edu.degree} {edu.field && `in ${edu.field}`}
+                                            {edu.degree}
                                         </h3>
                                         <p className="text-gray-300 mb-1 leading-snug text-[11px]">{edu.institution}</p>
                                         <p className="text-[11px] text-gray-400 italic leading-snug">
-                                            {formatDate(edu.graduation_date)}
+                                            {edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}
                                         </p>
                                         {edu.gpa && (
                                             <p className="text-[11px] mt-1 leading-snug" style={{ color: accentColor }}>

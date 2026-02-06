@@ -77,3 +77,4 @@ export default YourTemplatePDF;
 - [Styling Guide](https://react-pdf.org/styling)
 - [Components API](https://react-pdf.org/components)
 
+

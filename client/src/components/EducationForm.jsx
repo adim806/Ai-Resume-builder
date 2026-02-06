@@ -8,8 +8,8 @@ const EducationForm = ({data, onChange}) => {
         const newEducation = {
             institution: "",
             degree: "",
-            field: "",
-            graduation_dat: "",
+            start_date: "",
+            graduation_date: "",
             gpa: "",
         };
         onChange([...data, newEducation])
@@ -63,9 +63,16 @@ const EducationForm = ({data, onChange}) => {
 
                             <input value={education.degree || ""} onChange={(e)=>updateEducation(index,"degree", e.target.value)} type="text" placeholder="Degree (e.g. , Bachelor's, Master's)" className='px-3 py-2 text-sm'/>
 
-                            <input value={education.field || ""} onChange={(e)=>updateEducation(index,"field", e.target.value)} type="text" className='px-3 py-2 text-sm' placeholder="Field of Study"/>
-
-                            <input value={education.graduation_date || ""} onChange={(e)=>updateEducation(index,"graduation_date", e.target.value)} type="month" className='px-3 py-2 text-sm'/>
+                            <div className='col-span-2 grid grid-cols-2 gap-3'>
+                                <div className='space-y-1'>
+                                    <label className='text-xs text-gray-600 font-medium'>Start Date</label>
+                                    <input value={education.start_date || ""} onChange={(e)=>updateEducation(index,"start_date", e.target.value)} type="month" className='w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none'/>
+                                </div>
+                                <div className='space-y-1'>
+                                    <label className='text-xs text-gray-600 font-medium'>End Date</label>
+                                    <input value={education.graduation_date || ""} onChange={(e)=>updateEducation(index,"graduation_date", e.target.value)} type="month" className='w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none'/>
+                                </div>
+                            </div>
 
                         </div>
 
