@@ -82,7 +82,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                                         <p className="font-semibold uppercase">{edu.degree}</p>
                                         <p className="text-zinc-600">{edu.institution}</p>
                                         <p className="text-xs text-zinc-500">
-                                            {formatDate(edu.graduation_date)}
+                                            {edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}
                                         </p>
                                     </div>
                                 ))}

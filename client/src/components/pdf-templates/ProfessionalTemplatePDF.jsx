@@ -111,7 +111,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             marginBottom: 6,
         },
         skillText: {
-            fontSize: 10,
+            fontSize: 11,
             color: '#ffffff',
         },
         headerName: {
@@ -169,23 +169,23 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             marginBottom: 10,
         },
         educationDegree: {
-            fontSize: 9,
+            fontSize: 10,
             fontWeight: 'bold',
             color: '#ffffff',
             marginBottom: 2,
         },
         educationInstitution: {
-            fontSize: 8,
+            fontSize: 9,
             color: '#d1d5db',
             marginBottom: 2,
         },
         educationDate: {
-            fontSize: 8,
+            fontSize: 9,
             color: '#9ca3af',
             fontStyle: 'italic',
         },
         educationGpa: {
-            fontSize: 8,
+            fontSize: 9,
             color: accentColor,
             marginTop: 2,
         },
@@ -499,11 +499,11 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                             {data.education.map((edu, index) => (
                                 <View key={index} style={styles.educationItem}>
                                     <Text style={styles.educationDegree}>
-                                        {edu.degree} {edu.field && `in ${edu.field}`}
+                                        {edu.degree}
                                     </Text>
                                     <Text style={styles.educationInstitution}>{edu.institution}</Text>
                                     <Text style={styles.educationDate}>
-                                        {formatDate(edu.graduation_date)}
+                                        {edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}
                                     </Text>
                                     {edu.gpa && (
                                         <Text style={styles.educationGpa}>

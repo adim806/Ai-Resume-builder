@@ -96,6 +96,7 @@ export const uploadResume = async(req, res) => {
             phone: {type: String, default: ""},
             location: {type: String, default: ""},
             linkedin: {type: String, default: ""},
+            github: {type: String, default: ""},
             website: {type: String, default: ""},
         },
         experience: [{
@@ -114,7 +115,7 @@ export const uploadResume = async(req, res) => {
         education:[{
             institution: {type: String},
             degree: {type: String},
-            field: {type: String},
+            start_date: {type: String},
             graduation_date: {type: String},
             gpa: {type: String},
         }],

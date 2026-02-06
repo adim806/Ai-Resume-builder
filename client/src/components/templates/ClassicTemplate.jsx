@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Github, Globe } from "lucide-react";
 
 const ClassicTemplate = ({ data, accentColor }) => {
     const formatDate = (dateStr) => {
@@ -41,6 +41,12 @@ const ClassicTemplate = ({ data, accentColor }) => {
                         <div className="flex items-center gap-1">
                             <Linkedin className="size-4" />
                             <span className="break-all">{data.personal_info.linkedin}</span>
+                        </div>
+                    )}
+                    {data.personal_info?.github && (
+                        <div className="flex items-center gap-1">
+                            <Github className="size-4" />
+                            <span className="break-all">{data.personal_info.github}</span>
                         </div>
                     )}
                     {data.personal_info?.website && (
@@ -128,13 +134,13 @@ const ClassicTemplate = ({ data, accentColor }) => {
                             <div key={index} className="flex justify-between items-start">
                                 <div>
                                     <h3 className="font-semibold text-gray-900">
-                                        {edu.degree} {edu.field && `in ${edu.field}`}
+                                        {edu.degree}
                                     </h3>
                                     <p className="text-gray-700">{edu.institution}</p>
                                     {edu.gpa && <p className="text-sm text-gray-600">GPA: {edu.gpa}</p>}
                                 </div>
                                 <div className="text-sm text-gray-600">
-                                    <p>{formatDate(edu.graduation_date)}</p>
+                                    <p>{edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}</p>
                                 </div>
                             </div>
                         ))}

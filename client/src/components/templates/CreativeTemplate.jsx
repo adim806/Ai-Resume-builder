@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Github, Globe } from "lucide-react";
 
 const CreativeTemplate = ({ data, accentColor }) => {
     const formatDate = (dateStr) => {
@@ -98,13 +98,13 @@ const CreativeTemplate = ({ data, accentColor }) => {
                                 {data.education.map((edu, index) => (
                                     <div key={index} className="text-xs border-l-2 border-gray-400 pl-3">
                                         <h3 className="font-semibold mb-1 leading-snug text-gray-800">
-                                            {edu.degree} {edu.field && `in ${edu.field}`}
+                                            {edu.degree}
                                         </h3>
                                         <p className="text-gray-700 mb-1 leading-snug">
                                             {edu.institution}
                                         </p>
                                         <p className="text-[11px] text-gray-600 leading-snug">
-                                            {formatDate(edu.graduation_date)}
+                                            {edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}
                                         </p>
                                         {edu.gpa && (
                                             <p className="text-[11px] mt-1 text-gray-600">
@@ -134,7 +134,7 @@ const CreativeTemplate = ({ data, accentColor }) => {
                     )}
 
                     {/* Links */}
-                    {(data.personal_info?.linkedin || data.personal_info?.website) && (
+                    {(data.personal_info?.linkedin || data.personal_info?.github || data.personal_info?.website) && (
                         <section>
                             <h2 className="text-base font-bold mb-4 text-gray-800">
                                 Links
@@ -150,6 +150,19 @@ const CreativeTemplate = ({ data, accentColor }) => {
                                             className="truncate underline hover:no-underline leading-relaxed block text-gray-700"
                                         >
                                             {data.personal_info.linkedin}
+                                        </a>
+                                    </div>
+                                )}
+                                {data.personal_info?.github && (
+                                    <div className="flex items-start gap-2">
+                                        <Github size={14} className="mt-0.5 flex-shrink-0 text-gray-700" />
+                                        <a 
+                                            href={data.personal_info.github.startsWith('http') ? data.personal_info.github : `https://${data.personal_info.github}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="truncate underline hover:no-underline leading-relaxed block text-gray-700"
+                                        >
+                                            {data.personal_info.github}
                                         </a>
                                     </div>
                                 )}

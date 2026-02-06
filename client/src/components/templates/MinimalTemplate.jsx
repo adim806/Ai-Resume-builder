@@ -24,6 +24,9 @@ const MinimalTemplate = ({ data, accentColor }) => {
                     {data.personal_info?.linkedin && (
                         <span className="break-all">{data.personal_info.linkedin}</span>
                     )}
+                    {data.personal_info?.github && (
+                        <span className="break-all">{data.personal_info.github}</span>
+                    )}
                     {data.personal_info?.website && (
                         <span className="break-all">{data.personal_info.website}</span>
                     )}
@@ -99,13 +102,13 @@ const MinimalTemplate = ({ data, accentColor }) => {
                             <div key={index} className="flex justify-between items-baseline">
                                 <div>
                                     <h3 className="font-medium">
-                                        {edu.degree} {edu.field && `in ${edu.field}`}
+                                        {edu.degree}
                                     </h3>
                                     <p className="text-gray-600">{edu.institution}</p>
                                     {edu.gpa && <p className="text-sm text-gray-500">GPA: {edu.gpa}</p>}
                                 </div>
                                 <span className="text-sm text-gray-500">
-                                    {formatDate(edu.graduation_date)}
+                                    {edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}
                                 </span>
                             </div>
                         ))}

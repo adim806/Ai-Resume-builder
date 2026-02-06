@@ -451,13 +451,13 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
                             <View key={index} style={styles.educationItem}>
                                 <View>
                                     <Text style={styles.degree}>
-                                        {edu.degree} {edu.field && `in ${edu.field}`}
+                                        {edu.degree}
                                     </Text>
                                     <Text style={styles.institution}>{edu.institution}</Text>
                                     {edu.gpa && <Text style={styles.gpa}>GPA: {edu.gpa}</Text>}
                                 </View>
                                 <View>
-                                    <Text style={styles.dateRange}>{formatDate(edu.graduation_date)}</Text>
+                                    <Text style={styles.dateRange}>{edu.start_date && formatDate(edu.start_date)} {edu.start_date && edu.graduation_date && '- '} {formatDate(edu.graduation_date)}</Text>
                                 </View>
                             </View>
                         ))}
