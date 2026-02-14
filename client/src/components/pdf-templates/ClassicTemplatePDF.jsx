@@ -93,7 +93,7 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
                     .replace(/&#39;/g, "'")
                     .replace(/[ \t]+/g, ' '); // Normalize internal spaces
                 
-                if (cleanText.trim()) {
+                if (cleanText) {
                     segments.push({
                         text: cleanText,
                         bold: formatStack.bold,
@@ -153,42 +153,22 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
         </Svg>
     );
 
-    // Enhanced formatted text component with word-by-word rendering for proper wrapping
+    // Enhanced formatted text component that preserves formatting accurately
     const FormattedText = ({ html, style = {} }) => {
         const segments = parseHtmlContent(html);
         
         if (segments.length === 0) return null;
         
-        // Split segments into individual words to allow proper wrapping
-        const words = [];
-        segments.forEach((segment) => {
-            const text = segment.text;
-            
-            // Split by whitespace and newlines, but preserve them
-            const parts = text.split(/(\s+|\n)/);
-            
-            parts.forEach((part) => {
-                if (part) {
-                    words.push({
-                        text: part,
-                        bold: segment.bold,
-                        italic: segment.italic,
-                        underline: segment.underline
-                    });
-                }
-            });
-        });
-        
         return (
             <Text style={style}>
-                {words.map((word, index) => {
+                {segments.map((segment, index) => {
                     // Determine font family based on formatting
                     let fontFamily = 'Helvetica';
-                    if (word.bold && word.italic) {
+                    if (segment.bold && segment.italic) {
                         fontFamily = 'Helvetica-BoldOblique';
-                    } else if (word.bold) {
+                    } else if (segment.bold) {
                         fontFamily = 'Helvetica-Bold';
-                    } else if (word.italic) {
+                    } else if (segment.italic) {
                         fontFamily = 'Helvetica-Oblique';
                     }
                     
@@ -197,10 +177,10 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
                             key={index}
                             style={{
                                 fontFamily: fontFamily,
-                                textDecoration: word.underline ? 'underline' : 'none',
+                                textDecoration: segment.underline ? 'underline' : 'none',
                             }}
                         >
-                            {word.text}
+                            {segment.text}
                         </Text>
                     );
                 })}
@@ -251,13 +231,13 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
             border: `0.5px solid ${hexToRgba('#e5e7eb', 1)}`,
         },
         sectionTitle: {
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: 'bold',
-            marginBottom: 12,
+            marginBottom: 10,
             color: accentColor,
         },
         section: {
-            marginBottom: 24,
+            marginBottom: 18,
         },
         summary: {
             fontSize: 9,
@@ -461,6 +441,62 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
                                 </View>
                             </View>
                         ))}
+                    </View>
+                )}
+
+                {/* Tech Stack */}
+                {data.tech_stack && (
+                    data.tech_stack.languages_frontend?.length > 0 || 
+                    data.tech_stack.backend_dbs?.length > 0 || 
+                    data.tech_stack.tools_testing?.length > 0 || 
+                    data.tech_stack.methodologies?.length > 0
+                ) && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>TECH STACK</Text>
+                        
+                        {data.tech_stack.languages_frontend?.length > 0 && (
+                            <View style={{ marginBottom: 4.5 }}>
+                                <Text style={{ fontSize: 7.5, fontWeight: 'bold', color: accentColor, marginBottom: 1.5 }}>
+                                    Languages & Frontend
+                                </Text>
+                                <Text style={{ fontSize: 8.5, color: '#4b5563', lineHeight: 1.3 }}>
+                                    {data.tech_stack.languages_frontend.join(' • ')}
+                                </Text>
+                            </View>
+                        )}
+                        
+                        {data.tech_stack.backend_dbs?.length > 0 && (
+                            <View style={{ marginBottom: 4.5 }}>
+                                <Text style={{ fontSize: 7.5, fontWeight: 'bold', color: accentColor, marginBottom: 1.5 }}>
+                                    Backend & DBs
+                                </Text>
+                                <Text style={{ fontSize: 8.5, color: '#4b5563', lineHeight: 1.3 }}>
+                                    {data.tech_stack.backend_dbs.join(' • ')}
+                                </Text>
+                            </View>
+                        )}
+                        
+                        {data.tech_stack.tools_testing?.length > 0 && (
+                            <View style={{ marginBottom: 4.5 }}>
+                                <Text style={{ fontSize: 7.5, fontWeight: 'bold', color: accentColor, marginBottom: 1.5 }}>
+                                    Tools & Testing
+                                </Text>
+                                <Text style={{ fontSize: 8.5, color: '#4b5563', lineHeight: 1.3 }}>
+                                    {data.tech_stack.tools_testing.join(' • ')}
+                                </Text>
+                            </View>
+                        )}
+                        
+                        {data.tech_stack.methodologies?.length > 0 && (
+                            <View style={{ marginBottom: 4.5 }}>
+                                <Text style={{ fontSize: 7.5, fontWeight: 'bold', color: accentColor, marginBottom: 1.5 }}>
+                                    Methodologies
+                                </Text>
+                                <Text style={{ fontSize: 8.5, color: '#4b5563', lineHeight: 1.3 }}>
+                                    {data.tech_stack.methodologies.join(' • ')}
+                                </Text>
+                            </View>
+                        )}
                     </View>
                 )}
 

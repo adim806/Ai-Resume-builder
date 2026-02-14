@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { dummyResumeData } from '../assets/assets'
-import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User, Shield } from 'lucide-react'
+import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User, Shield, Code2 } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -11,6 +11,7 @@ import ExperienceForm from '../components/ExperienceForm'
 import EducationForm from '../components/EducationForm'
 import ProjectForm from '../components/ProjectForm'
 import SkillsForm from '../components/SkillsForm'
+import TechStackForm from '../components/TechStackForm'
 import MilitaryServiceForm from '../components/MilitaryServiceForm'
 import { useSelector } from 'react-redux'
 import api from '../configs/api'
@@ -33,6 +34,12 @@ const ResumeBuilder = () => {
     education: [],
     projects: [],
     skills: [],
+    tech_stack: {
+      languages_frontend: [],
+      backend_dbs: [],
+      tools_testing: [],
+      methodologies: []
+    },
     military_service: [],
     template: "classic",
     accent_color: "#3B82F6",
@@ -63,6 +70,7 @@ const ResumeBuilder = () => {
     { id: "education", name: "education", icon: GraduationCap},
     { id: "project", name: "project", icon: FolderIcon},
     { id: "skills", name: "skills", icon: Sparkles},
+    { id: "techstack", name: "Tech Stack", icon: Code2},
     { id: "military", name: "military", icon: Shield},
 
   ]
@@ -223,6 +231,9 @@ const ResumeBuilder = () => {
                 )}
                 {activeSection.id == 'skills' && (
                   <SkillsForm data={resumeData.skills} onChange={(data)=> setResumeData(prev=> ({...prev, skills: data}))} />
+                )}
+                {activeSection.id == 'techstack' && (
+                  <TechStackForm data={resumeData.tech_stack} onChange={(data)=> setResumeData(prev=> ({...prev, tech_stack: data}))} />
                 )}
                 {activeSection.id == 'military' && (
                   <MilitaryServiceForm data={resumeData.military_service} onChange={(data)=> setResumeData(prev=> ({...prev, military_service: data}))} />

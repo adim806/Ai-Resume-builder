@@ -33,17 +33,17 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             width: '33.33%',
             backgroundColor: '#0f172a', // slate-900 (darker)
             color: '#ffffff',
-            padding: '20 24',
+            padding: '18 20',
         },
         rightContent: {
             width: '66.67%',
             padding: '20 24',
         },
         profileImage: {
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            marginBottom: 16,
+            width: 75,
+            height: 75,
+            borderRadius: 37.5,
+            marginBottom: 12,
             alignSelf: 'center',
             border: '2px solid #ffffff',
         },
@@ -59,29 +59,29 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             paddingRight: 24,
         },
         sectionTitleLeft: {
-            fontSize: 12,
+            fontSize: 11.5,
             fontWeight: 'bold',
-            marginBottom: 10,
-            paddingBottom: 4,
-            borderBottom: `2px solid ${accentColor}`,
-            marginLeft: -24,
-            marginRight: -24,
-            paddingLeft: 24,
-            paddingRight: 24,
+            marginBottom: 7,
+            paddingBottom: 3,
+            borderBottom: `1.5px solid ${accentColor}`,
+            marginLeft: -20,
+            marginRight: -20,
+            paddingLeft: 20,
+            paddingRight: 20,
         },
         section: {
-            marginBottom: 16,
+            marginBottom: 13,
         },
         iconRow: {
             flexDirection: 'row',
             alignItems: 'center',
-            marginBottom: 10,
+            marginBottom: 8,
             fontSize: 9,
         },
         iconContainer: {
             width: 16,
             height: 16,
-            marginRight: 8,
+            marginRight: 7,
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: '#ffffff',
@@ -89,30 +89,42 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             padding: 2.5,
         },
         textSmall: {
-            fontSize: 10,
-            lineHeight: 1.4,
+            fontSize: 9.5,
+            lineHeight: 1.35,
             color: '#ffffff',
         },
         textGray: {
-            fontSize: 10,
-            lineHeight: 1.4,
+            fontSize: 9.5,
+            lineHeight: 1.35,
             color: '#d1d5db',
         },
         skillBullet: {
-            width: 6,
-            height: 6,
-            borderRadius: 3,
+            width: 5.5,
+            height: 5.5,
+            borderRadius: 2.75,
             backgroundColor: accentColor,
-            marginRight: 8,
+            marginRight: 7,
         },
         skillRow: {
             flexDirection: 'row',
             alignItems: 'center',
-            marginBottom: 6,
+            marginBottom: 4.5,
         },
         skillText: {
-            fontSize: 11,
+            fontSize: 10.5,
             color: '#ffffff',
+        },
+        techStackCategory: {
+            fontSize: 8,
+            fontWeight: 'bold',
+            color: accentColor,
+            marginBottom: 1.5,
+            marginTop: 0,
+        },
+        techStackItems: {
+            fontSize: 9,
+            color: '#d1d5db',
+            lineHeight: 1.35,
         },
         headerName: {
             fontSize: 26,
@@ -130,7 +142,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             fontSize: 10,
             lineHeight: 1.6,
             color: '#374151',
-            marginBottom: 10,
+            marginBottom: 5,
             textAlign: 'left',
         },
         jobTitle: {
@@ -163,31 +175,43 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             textAlign: 'left',
         },
         experienceItem: {
-            marginBottom: 10,
+            marginBottom: 8,
         },
         educationItem: {
-            marginBottom: 10,
+            marginBottom: 8,
         },
         educationDegree: {
             fontSize: 10,
             fontWeight: 'bold',
             color: '#ffffff',
-            marginBottom: 2,
+            marginBottom: 1.5,
         },
         educationInstitution: {
             fontSize: 9,
             color: '#d1d5db',
-            marginBottom: 2,
+            marginBottom: 1.5,
         },
         educationDate: {
-            fontSize: 9,
+            fontSize: 8.5,
             color: '#9ca3af',
             fontStyle: 'italic',
         },
         educationGpa: {
             fontSize: 9,
             color: accentColor,
-            marginTop: 2,
+            marginTop: 1.5,
+        },
+        projectName: {
+            fontSize: 10,
+            fontWeight: 'semibold',
+            color: accentColor,
+            marginBottom: 2,
+        },
+        projectType: {
+            fontSize: 8,
+            color: '#6b7280',
+            fontStyle: 'italic',
+            marginBottom: 3,
         },
     });
 
@@ -264,7 +288,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                     .replace(/&#39;/g, "'")
                     .replace(/[ \t]+/g, ' '); // Normalize internal spaces
                 
-                if (cleanText.trim()) {
+                if (cleanText) {
                     segments.push({
                         text: cleanText,
                         bold: formatStack.bold,
@@ -333,42 +357,22 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
         </Svg>
     );
 
-    // Enhanced formatted text component with word-by-word rendering for proper wrapping
+    // Enhanced formatted text component that preserves formatting accurately
     const FormattedText = ({ html, style = {} }) => {
         const segments = parseHtmlContent(html);
         
         if (segments.length === 0) return null;
         
-        // Split segments into individual words to allow proper wrapping
-        const words = [];
-        segments.forEach((segment) => {
-            const text = segment.text;
-            
-            // Split by whitespace and newlines, but preserve them
-            const parts = text.split(/(\s+|\n)/);
-            
-            parts.forEach((part) => {
-                if (part) {
-                    words.push({
-                        text: part,
-                        bold: segment.bold,
-                        italic: segment.italic,
-                        underline: segment.underline
-                    });
-                }
-            });
-        });
-        
         return (
             <Text style={style}>
-                {words.map((word, index) => {
+                {segments.map((segment, index) => {
                     // Determine font family based on formatting
                     let fontFamily = 'Helvetica';
-                    if (word.bold && word.italic) {
+                    if (segment.bold && segment.italic) {
                         fontFamily = 'Helvetica-BoldOblique';
-                    } else if (word.bold) {
+                    } else if (segment.bold) {
                         fontFamily = 'Helvetica-Bold';
-                    } else if (word.italic) {
+                    } else if (segment.italic) {
                         fontFamily = 'Helvetica-Oblique';
                     }
                     
@@ -377,10 +381,10 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                             key={index}
                             style={{
                                 fontFamily: fontFamily,
-                                textDecoration: word.underline ? 'underline' : 'none',
+                                textDecoration: segment.underline ? 'underline' : 'none',
                             }}
                         >
-                            {word.text}
+                            {segment.text}
                         </Text>
                     );
                 })}
@@ -479,6 +483,53 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                         </View>
                     )}
 
+                    {/* Tech Stack Section */}
+                    {data.tech_stack && (
+                        (data.tech_stack.languages_frontend?.length > 0 || 
+                         data.tech_stack.backend_dbs?.length > 0 || 
+                         data.tech_stack.tools_testing?.length > 0 || 
+                         data.tech_stack.methodologies?.length > 0) && (
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitleLeft}>Tech Stack</Text>
+                            
+                            {data.tech_stack.languages_frontend?.length > 0 && (
+                                <View style={{ marginBottom: 3.5 }}>
+                                    <Text style={styles.techStackCategory}>Languages & Frontend</Text>
+                                    <Text style={styles.techStackItems}>
+                                        {data.tech_stack.languages_frontend.join(' • ')}
+                                    </Text>
+                                </View>
+                            )}
+                            
+                            {data.tech_stack.backend_dbs?.length > 0 && (
+                                <View style={{ marginBottom: 3.5 }}>
+                                    <Text style={styles.techStackCategory}>Backend & DBs</Text>
+                                    <Text style={styles.techStackItems}>
+                                        {data.tech_stack.backend_dbs.join(' • ')}
+                                    </Text>
+                                </View>
+                            )}
+                            
+                            {data.tech_stack.tools_testing?.length > 0 && (
+                                <View style={{ marginBottom: 3.5 }}>
+                                    <Text style={styles.techStackCategory}>Tools & Testing</Text>
+                                    <Text style={styles.techStackItems}>
+                                        {data.tech_stack.tools_testing.join(' • ')}
+                                    </Text>
+                                </View>
+                            )}
+                            
+                            {data.tech_stack.methodologies?.length > 0 && (
+                                <View style={{ marginBottom: 3.5 }}>
+                                    <Text style={styles.techStackCategory}>Methodologies</Text>
+                                    <Text style={styles.techStackItems}>
+                                        {data.tech_stack.methodologies.join(' • ')}
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
+                    ))}
+
                     {/* Skills Section */}
                     {data.skills && data.skills.length > 0 && (
                         <View style={styles.section}>
@@ -562,9 +613,9 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                             <Text style={styles.sectionTitle}>Projects</Text>
                             {data.projects.map((project, index) => (
                                 <View key={index} style={styles.experienceItem}>
-                                    <Text style={styles.jobTitle}>{project.name}</Text>
+                                    <Text style={styles.projectName}>{project.name}</Text>
                                     {project.type && (
-                                        <Text style={styles.dateRange}>{project.type}</Text>
+                                        <Text style={styles.projectType}>{project.type}</Text>
                                     )}
                                     {project.description && (
                                         <Text style={styles.description}>
