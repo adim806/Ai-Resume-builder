@@ -163,7 +163,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             textAlign: 'left',
         },
         experienceItem: {
-            marginBottom: 14,
+            marginBottom: 10,
         },
         educationItem: {
             marginBottom: 10,
@@ -537,7 +537,7 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
 
                     {/* Work Experience */}
                     {data.experience && data.experience.length > 0 && (
-                        <View style={{ marginBottom: 12 }}>
+                        <View style={{ marginBottom: 10 }}>
                             <Text style={styles.sectionTitle}>Work Experience</Text>
                             {data.experience.map((exp, index) => (
                                 <View key={index} style={styles.experienceItem}>
