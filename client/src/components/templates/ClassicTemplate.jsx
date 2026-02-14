@@ -148,6 +148,66 @@ const ClassicTemplate = ({ data, accentColor }) => {
                 </section>
             )}
 
+            {/* Tech Stack */}
+            {data.tech_stack && (
+                data.tech_stack.languages_frontend?.length > 0 || 
+                data.tech_stack.backend_dbs?.length > 0 || 
+                data.tech_stack.tools_testing?.length > 0 || 
+                data.tech_stack.methodologies?.length > 0
+            ) && (
+                <section className="mb-6">
+                    <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
+                        TECH STACK
+                    </h2>
+
+                    <div className="space-y-2.5">
+                        {data.tech_stack.languages_frontend?.length > 0 && (
+                            <div>
+                                <h3 className="text-xs font-semibold mb-1" style={{ color: accentColor }}>
+                                    Languages & Frontend
+                                </h3>
+                                <p className="text-sm text-gray-600 ml-3">
+                                    {data.tech_stack.languages_frontend.join(' • ')}
+                                </p>
+                            </div>
+                        )}
+                        
+                        {data.tech_stack.backend_dbs?.length > 0 && (
+                            <div>
+                                <h3 className="text-xs font-semibold mb-1" style={{ color: accentColor }}>
+                                    Backend & DBs
+                                </h3>
+                                <p className="text-sm text-gray-600 ml-3">
+                                    {data.tech_stack.backend_dbs.join(' • ')}
+                                </p>
+                            </div>
+                        )}
+                        
+                        {data.tech_stack.tools_testing?.length > 0 && (
+                            <div>
+                                <h3 className="text-xs font-semibold mb-1" style={{ color: accentColor }}>
+                                    Tools & Testing
+                                </h3>
+                                <p className="text-sm text-gray-600 ml-3">
+                                    {data.tech_stack.tools_testing.join(' • ')}
+                                </p>
+                            </div>
+                        )}
+                        
+                        {data.tech_stack.methodologies?.length > 0 && (
+                            <div>
+                                <h3 className="text-xs font-semibold mb-1" style={{ color: accentColor }}>
+                                    Methodologies
+                                </h3>
+                                <p className="text-sm text-gray-600 ml-3">
+                                    {data.tech_stack.methodologies.join(' • ')}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+            )}
+
             {/* Skills */}
             {data.skills && data.skills.length > 0 && (
                 <section className="mb-6">

@@ -116,6 +116,65 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                         </section>
                     )}
 
+                    {/* Tech Stack Section */}
+                    {data.tech_stack && (
+                        data.tech_stack.languages_frontend?.length > 0 || 
+                        data.tech_stack.backend_dbs?.length > 0 || 
+                        data.tech_stack.tools_testing?.length > 0 || 
+                        data.tech_stack.methodologies?.length > 0
+                    ) && (
+                        <section className="mb-4 px-6">
+                            <h2 className="text-[13.5px] font-bold mb-2.5 pb-1 border-b-[1.5px] -mx-6 px-6" style={{ borderColor: accentColor }}>
+                                Tech Stack
+                            </h2>
+                            <div className="space-y-2">
+                                {data.tech_stack.languages_frontend?.length > 0 && (
+                                    <div>
+                                        <h3 className="text-[9px] font-semibold mb-0.5" style={{ color: accentColor }}>
+                                            Languages & Frontend
+                                        </h3>
+                                        <p className="text-[10.5px] text-gray-300 leading-snug">
+                                            {data.tech_stack.languages_frontend.join(' • ')}
+                                        </p>
+                                    </div>
+                                )}
+                                
+                                {data.tech_stack.backend_dbs?.length > 0 && (
+                                    <div>
+                                        <h3 className="text-[9px] font-semibold mb-0.5" style={{ color: accentColor }}>
+                                            Backend & DBs
+                                        </h3>
+                                        <p className="text-[10.5px] text-gray-300 leading-snug">
+                                            {data.tech_stack.backend_dbs.join(' • ')}
+                                        </p>
+                                    </div>
+                                )}
+                                
+                                {data.tech_stack.tools_testing?.length > 0 && (
+                                    <div>
+                                        <h3 className="text-[9px] font-semibold mb-0.5" style={{ color: accentColor }}>
+                                            Tools & Testing
+                                        </h3>
+                                        <p className="text-[10.5px] text-gray-300 leading-snug">
+                                            {data.tech_stack.tools_testing.join(' • ')}
+                                        </p>
+                                    </div>
+                                )}
+                                
+                                {data.tech_stack.methodologies?.length > 0 && (
+                                    <div>
+                                        <h3 className="text-[9px] font-semibold mb-0.5" style={{ color: accentColor }}>
+                                            Methodologies
+                                        </h3>
+                                        <p className="text-[10.5px] text-gray-300 leading-snug">
+                                            {data.tech_stack.methodologies.join(' • ')}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </section>
+                    )}
+
                     {/* Skills Section */}
                     {data.skills && data.skills.length > 0 && (
                         <section className="mb-5 px-6">
