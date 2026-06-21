@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { dummyResumeData } from '../assets/assets'
-import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User, Shield, Code2 } from 'lucide-react'
+import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, Code2, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User, Shield } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -38,7 +38,7 @@ const ResumeBuilder = () => {
       languages_frontend: [],
       backend_dbs: [],
       tools_testing: [],
-      methodologies: []
+      methodologies: [],
     },
     military_service: [],
     template: "classic",
@@ -69,8 +69,8 @@ const ResumeBuilder = () => {
     { id: "experience", name: "experience", icon: Briefcase},
     { id: "education", name: "education", icon: GraduationCap},
     { id: "project", name: "project", icon: FolderIcon},
-    { id: "skills", name: "skills", icon: Sparkles},
     { id: "techstack", name: "Tech Stack", icon: Code2},
+    { id: "skills", name: "skills", icon: Sparkles},
     { id: "military", name: "military", icon: Shield},
 
   ]
@@ -105,39 +105,50 @@ const ResumeBuilder = () => {
     }
   }
 
+  const resolveImageForPdf = async (image) => {
+    if (!image) return "";
+    if (typeof image === "string") return image;
+    if (image instanceof File || image instanceof Blob) {
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(image);
+      });
+    }
+    return "";
+  };
+
   const downLoadResume = async () => {
     try {
-      toast.loading('Generating PDF...');
-      
-      // Get the appropriate PDF template component
       const PDFTemplate = getPDFTemplate(resumeData.template);
-      
-      // Create the PDF document
-      const doc = <PDFTemplate data={resumeData} accentColor={resumeData.accent_color} />;
-      
-      // Generate the PDF blob
-      const blob = await pdf(doc).toBlob();
-      
-      // Create download link
+      const imageSrc = await resolveImageForPdf(resumeData.personal_info?.image);
+
+      const pdfData = {
+        ...resumeData,
+        personal_info: {
+          ...resumeData.personal_info,
+          image: imageSrc,
+        },
+      };
+
+      const blob = await pdf(
+        <PDFTemplate data={pdfData} accentColor={resumeData.accent_color} />
+      ).toBlob();
+
+      const fileName = `${resumeData.personal_info?.full_name || resumeData.title || "resume"}.pdf`;
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.download = `${resumeData.title || 'resume'}.pdf`;
-      document.body.appendChild(link);
+      link.download = fileName;
       link.click();
-      document.body.removeChild(link);
-      
-      // Clean up
       URL.revokeObjectURL(url);
-      
-      toast.dismiss();
-      toast.success('PDF downloaded successfully!');
+      toast.success("PDF downloaded");
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      toast.dismiss();
-      toast.error('Failed to generate PDF. Please try again.');
+      console.error("PDF download failed:", error);
+      toast.error("Failed to generate PDF");
     }
-  }
+  };
 
   const saveResume = async ()=>{
     try {
@@ -229,11 +240,11 @@ const ResumeBuilder = () => {
                 {activeSection.id == 'project' && (
                   <ProjectForm data={resumeData.projects} onChange={(data)=> setResumeData(prev=> ({...prev, projects: data}))} />
                 )}
-                {activeSection.id == 'skills' && (
-                  <SkillsForm data={resumeData.skills} onChange={(data)=> setResumeData(prev=> ({...prev, skills: data}))} />
-                )}
                 {activeSection.id == 'techstack' && (
                   <TechStackForm data={resumeData.tech_stack} onChange={(data)=> setResumeData(prev=> ({...prev, tech_stack: data}))} />
+                )}
+                {activeSection.id == 'skills' && (
+                  <SkillsForm data={resumeData.skills} onChange={(data)=> setResumeData(prev=> ({...prev, skills: data}))} />
                 )}
                 {activeSection.id == 'military' && (
                   <MilitaryServiceForm data={resumeData.military_service} onChange={(data)=> setResumeData(prev=> ({...prev, military_service: data}))} />

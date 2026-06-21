@@ -28,7 +28,7 @@ const ProjectForm = ({data, onChange}) => {
     <div >  
         <div className='flex items-center justify-between'>
             <div>
-                <h3 className='flex items-center gap-2 text-lg font-semibold text-gray-900'> Projects </h3>
+                <h3 className='flex items-center gap-2 text-lg font-semibold text-gray-900'> Projects & Training </h3>
                 <p className='text-sm text-gray-500'>Add your Projects</p>
             </div>
             <button onClick={addProject} className='flex items-center gap-2 px-3 py-1 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors'>

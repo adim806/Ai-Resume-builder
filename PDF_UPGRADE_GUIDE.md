@@ -145,3 +145,4 @@ client/src/pages/ResumeBuilder.jsx
 **תאריך שדרוג:** פברואר 2026
 **גרסה:** 2.0 - Professional PDF Generation
 
+
