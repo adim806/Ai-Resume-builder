@@ -296,9 +296,10 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                             </p>
                                         )}
                                         {project.description && (
-                                            <p className={`${bodyTextClass} mt-1.5`}>
-                                                {project.description}
-                                            </p>
+                                            <div
+                                                className={`${bodyTextClass} mt-1.5`}
+                                                dangerouslySetInnerHTML={{ __html: project.description }}
+                                            />
                                         )}
                                     </div>
                                 ))}

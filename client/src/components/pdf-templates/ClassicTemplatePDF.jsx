@@ -436,7 +436,7 @@ const ClassicTemplatePDF = ({ data, accentColor }) => {
                             <View key={index} style={styles.projectItem}>
                                 <Text style={styles.projectName}>{proj.name}</Text>
                                 {proj.description && (
-                                    <Text style={styles.projectDescription}>{proj.description}</Text>
+                                    <FormattedText html={proj.description} style={styles.projectDescription} />
                                 )}
                             </View>
                         ))}

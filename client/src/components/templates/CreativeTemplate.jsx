@@ -253,9 +253,10 @@ const CreativeTemplate = ({ data, accentColor }) => {
                                             )}
                                         </div>
                                         {project.description && (
-                                            <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4">
-                                                {project.description}
-                                            </p>
+                                            <div
+                                                className="text-xs text-gray-700 leading-relaxed whitespace-pre-line ml-4"
+                                                dangerouslySetInnerHTML={{ __html: project.description }}
+                                            />
                                         )}
                                     </div>
                                 ))}

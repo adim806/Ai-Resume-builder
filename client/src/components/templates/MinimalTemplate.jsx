@@ -83,7 +83,12 @@ const MinimalTemplate = ({ data, accentColor }) => {
                         {data.projects.map((proj, index) => (
                             <div key={index} className="flex flex-col gap-2 justify-between items-baseline">
                                 <h3 className="text-lg font-medium ">{proj.name}</h3>
-                                <p className="text-gray-600">{proj.description}</p>
+                                {proj.description && (
+                                <div
+                                    className="text-gray-600"
+                                    dangerouslySetInnerHTML={{ __html: proj.description }}
+                                />
+                                )}
                             </div>
                         ))}
                     </div>

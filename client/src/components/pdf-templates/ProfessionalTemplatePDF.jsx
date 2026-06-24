@@ -3,68 +3,176 @@ import { Document, Page, Text, View, StyleSheet, Image, Svg, Path, Link } from '
 
 const SIDEBAR_WIDTH = 192;
 
-const ProfessionalTemplatePDF = ({ data, accentColor }) => {
-    const formatDate = (dateStr) => {
-        if (!dateStr) return "";
-        const [year, month] = dateStr.split("-");
-        const date = new Date(year, month - 1);
-        return date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-        });
-    };
+const htmlTextLength = (html) => (html ? html.replace(/<[^>]+>/g, '').length : 0);
 
-    const styles = StyleSheet.create({
+const htmlRenderWeight = (html) => {
+    if (!html) return 0;
+    const listItems = (html.match(/<li[\s>]/gi) || []).length;
+    const paragraphs = (html.match(/<p[\s>]/gi) || []).length;
+    return listItems * 0.65 + Math.max(0, paragraphs - 1) * 0.35;
+};
+
+const computeLayoutTier = (data) => {
+    let score = 0;
+
+    score += htmlTextLength(data.professional_summary) / 70;
+    score += htmlRenderWeight(data.professional_summary);
+
+    score += (data.experience?.length || 0) * 2.2;
+    data.experience?.forEach((exp) => {
+        score += htmlTextLength(exp.description) / 100;
+        score += htmlRenderWeight(exp.description);
+    });
+
+    score += (data.projects?.length || 0) * 1.8;
+    data.projects?.forEach((project) => {
+        score += htmlTextLength(project.description) / 90;
+        score += htmlRenderWeight(project.description);
+    });
+
+    score += (data.military_service?.length || 0) * 2.2;
+    data.military_service?.forEach((service) => {
+        score += htmlTextLength(service.description) / 100;
+        score += htmlRenderWeight(service.description);
+    });
+
+    score += (data.skills?.length || 0) * 0.35;
+    score += (data.education?.length || 0) * 0.6;
+
+    const techStack = data.tech_stack || {};
+    score += Object.values(techStack).flat().length * 0.06;
+
+    if (score <= 17) return 'normal';
+    if (score <= 23) return 'compact';
+    if (score <= 30) return 'compactMid';
+    return 'tight';
+};
+
+const LAYOUT_PRESETS = {
+    normal: {
+        bodySize: 10,
+        lineHeight: 1.62,
+        padY: 24,
+        padBottomMain: 0,
+        padXMain: 24,
+        padXSidebar: 20,
+        sectionGap: 14,
+        itemGap: 10,
+        headerName: 26,
+        headerRole: 14,
+        sectionTitle: 13,
+        sidebarTitle: 12,
+        profileSize: 72,
+        iconGap: 8,
+        titlePadBottom: 4,
+    },
+    compact: {
+        bodySize: 10,
+        lineHeight: 1.58,
+        padY: 22,
+        padBottomMain: 0,
+        padXMain: 24,
+        padXSidebar: 20,
+        sectionGap: 13,
+        itemGap: 9,
+        headerName: 25,
+        headerRole: 14,
+        sectionTitle: 13,
+        sidebarTitle: 12,
+        profileSize: 72,
+        iconGap: 7,
+        titlePadBottom: 4,
+    },
+    compactMid: {
+        bodySize: 10,
+        lineHeight: 1.52,
+        padY: 20,
+        padBottomMain: 0,
+        padXMain: 22,
+        padXSidebar: 20,
+        sectionGap: 11,
+        itemGap: 8,
+        headerName: 24,
+        headerRole: 13,
+        sectionTitle: 12.5,
+        sidebarTitle: 12,
+        profileSize: 72,
+        iconGap: 6,
+        titlePadBottom: 3,
+    },
+    tight: {
+        bodySize: 9.75,
+        lineHeight: 1.48,
+        padY: 19,
+        padBottomMain: 0,
+        padXMain: 22,
+        padXSidebar: 18,
+        sectionGap: 10,
+        itemGap: 7,
+        headerName: 23,
+        headerRole: 12.5,
+        sectionTitle: 12,
+        sidebarTitle: 11,
+        profileSize: 68,
+        iconGap: 6,
+        titlePadBottom: 3,
+    },
+};
+
+const createStyles = (accentColor, tier) => {
+    const p = LAYOUT_PRESETS[tier];
+
+    return StyleSheet.create({
         page: {
             fontFamily: 'Helvetica',
-            fontSize: 10,
+            fontSize: p.bodySize,
             color: '#1e293b',
         },
         sidebar: {
             position: 'absolute',
             top: 0,
             left: 0,
-            bottom: 0,
+            height: '100%',
             width: SIDEBAR_WIDTH,
             backgroundColor: '#0f172a',
             color: '#ffffff',
-            paddingTop: 24,
-            paddingBottom: 24,
-            paddingHorizontal: 20,
+            paddingTop: p.padY,
+            paddingBottom: p.padY,
+            paddingHorizontal: p.padXSidebar,
         },
         mainContent: {
             marginLeft: SIDEBAR_WIDTH,
-            paddingTop: 24,
-            paddingBottom: 24,
-            paddingHorizontal: 24,
+            paddingTop: p.padY,
+            paddingBottom: p.padBottomMain,
+            paddingHorizontal: p.padXMain,
         },
         profileImage: {
-            width: 72,
-            height: 72,
-            borderRadius: 36,
+            width: p.profileSize,
+            height: p.profileSize,
+            borderRadius: p.profileSize / 2,
             marginBottom: 16,
             alignSelf: 'center',
             border: '2px solid #ffffff',
         },
         sidebarSectionTitle: {
-            fontSize: 12,
+            fontSize: p.sidebarTitle,
             fontWeight: 'bold',
             color: '#ffffff',
             marginBottom: 8,
-            paddingBottom: 4,
+            paddingBottom: p.titlePadBottom,
             borderBottom: `2px solid ${accentColor}`,
-            marginLeft: -20,
-            marginRight: -20,
-            paddingLeft: 20,
-            paddingRight: 20,
+            marginLeft: -p.padXSidebar,
+            marginRight: -p.padXSidebar,
+            paddingLeft: p.padXSidebar,
+            paddingRight: p.padXSidebar,
         },
         sidebarSection: {
-            marginBottom: 14,
+            marginBottom: p.sectionGap,
         },
         iconRow: {
             flexDirection: 'row',
             alignItems: 'flex-start',
-            marginBottom: 8,
+            marginBottom: p.iconGap,
         },
         iconCircle: {
             width: 15,
@@ -77,15 +185,15 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             marginTop: 1,
         },
         sidebarText: {
-            fontSize: 10,
+            fontSize: p.bodySize,
             color: '#ffffff',
-            lineHeight: 1.45,
+            lineHeight: p.lineHeight,
             flex: 1,
         },
         linkText: {
-            fontSize: 9,
+            fontSize: p.bodySize - 0.5,
             color: '#9ca3af',
-            lineHeight: 1.45,
+            lineHeight: p.lineHeight,
             flex: 1,
         },
         skillRow: {
@@ -101,85 +209,85 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             marginRight: 8,
         },
         skillText: {
-            fontSize: 10,
+            fontSize: p.bodySize,
             color: '#ffffff',
         },
         techStackCategory: {
-            fontSize: 9,
+            fontSize: p.bodySize - 1,
             fontWeight: 'bold',
             color: accentColor,
             marginBottom: 3,
         },
         techStackItems: {
-            fontSize: 10,
+            fontSize: p.bodySize,
             color: '#ffffff',
-            lineHeight: 1.45,
+            lineHeight: p.lineHeight,
             marginBottom: 8,
         },
         educationDegree: {
-            fontSize: 10,
+            fontSize: p.bodySize,
             fontWeight: 'bold',
             color: '#ffffff',
             marginBottom: 2,
         },
         educationInstitution: {
-            fontSize: 9,
+            fontSize: p.bodySize - 1,
             color: '#d1d5db',
             marginBottom: 2,
         },
         educationDate: {
-            fontSize: 9,
+            fontSize: p.bodySize - 1,
             color: '#9ca3af',
             fontStyle: 'italic',
         },
         educationGpa: {
-            fontSize: 9,
+            fontSize: p.bodySize - 1,
             color: accentColor,
             marginTop: 2,
         },
         headerName: {
-            fontSize: 26,
+            fontSize: p.headerName,
             fontWeight: 'bold',
             color: '#1e293b',
             marginBottom: 4,
         },
         headerProfession: {
-            fontSize: 14,
+            fontSize: p.headerRole,
             color: accentColor,
-            marginBottom: 12,
+            marginBottom: p.sectionGap - 1,
         },
         mainSectionTitle: {
-            fontSize: 13,
+            fontSize: p.sectionTitle,
             fontWeight: 'bold',
             color: '#1e293b',
             marginBottom: 8,
-            paddingBottom: 4,
+            paddingBottom: p.titlePadBottom,
             borderBottom: `2px solid ${accentColor}`,
         },
         mainSection: {
-            marginBottom: 14,
+            marginBottom: p.sectionGap,
         },
         summary: {
-            fontSize: 10,
-            lineHeight: 1.65,
+            fontSize: p.bodySize,
+            lineHeight: p.lineHeight,
             color: '#374151',
-            marginBottom: 14,
+            marginBottom: p.sectionGap,
             textAlign: 'left',
         },
         jobTitle: {
-            fontSize: 11,
+            fontSize: p.bodySize + 1,
             fontWeight: 'bold',
             color: '#1e293b',
         },
         companyName: {
-            fontSize: 10,
+            fontSize: p.bodySize,
             fontWeight: 'bold',
             color: accentColor,
             flex: 1,
             paddingRight: 8,
         },
         dateRange: {
-            fontSize: 9,
+            fontSize: p.bodySize - 1,
             color: '#6b7280',
             fontStyle: 'italic',
             flexShrink: 0,
@@ -192,50 +300,68 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
             marginBottom: 3,
         },
         description: {
-            fontSize: 10,
-            lineHeight: 1.65,
+            fontSize: p.bodySize,
+            lineHeight: p.lineHeight,
             color: '#374151',
             marginLeft: 10,
             textAlign: 'left',
         },
         experienceItem: {
-            marginBottom: 10,
+            marginBottom: p.itemGap,
         },
         projectName: {
-            fontSize: 11,
+            fontSize: p.bodySize + 1,
             fontWeight: 'bold',
             color: accentColor,
         },
         projectType: {
-            fontSize: 9,
+            fontSize: p.bodySize - 1,
             color: '#6b7280',
             marginTop: 2,
             marginBottom: 3,
         },
         projectDescription: {
-            fontSize: 10,
-            lineHeight: 1.65,
+            fontSize: p.bodySize,
+            lineHeight: p.lineHeight,
             color: '#374151',
             textAlign: 'left',
         },
     });
+};
+
+const ProfessionalTemplatePDF = ({ data, accentColor }) => {
+    const layoutTier = computeLayoutTier(data);
+    const styles = createStyles(accentColor, layoutTier);
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "";
+        const [year, month] = dateStr.split("-");
+        const date = new Date(year, month - 1);
+        return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+        });
+    };
 
     const parseHtmlContent = (html) => {
         if (!html) return [];
 
         let content = html.trim();
+        content = content.replace(/<p>\s*(<br\s*\/?>)?\s*<\/p>/gi, '');
         content = content.replace(/<ul[^>]*>/gi, '');
         content = content.replace(/<\/ul>/gi, '');
         content = content.replace(/<ol[^>]*>/gi, '');
         content = content.replace(/<\/ol>/gi, '');
-        content = content.replace(/<li[^>]*>/gi, '\n• ');
+        content = content.replace(/<li[^>]*>/gi, '|||LI|||');
         content = content.replace(/<\/li>/gi, '');
         content = content.replace(/<br\s*\/?>/gi, '\n');
         content = content.replace(/<\/p>/gi, '\n');
         content = content.replace(/<p[^>]*>/gi, '');
+        content = content.replace(/\|\|\|LI\|\|\|/g, '\n• ');
         content = content.replace(/\n{3,}/g, '\n\n');
         content = content.replace(/^\n+/, '');
         content = content.replace(/\n+$/, '');
+        content = content.replace(/^\n• /, '• ');
 
         const tagRegex = /(<strong[^>]*>|<\/strong>|<b[^>]*>|<\/b>|<em[^>]*>|<\/em>|<i[^>]*>|<\/i>)/gi;
         const parts = content.split(tagRegex);
@@ -360,10 +486,21 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
         { key: 'methodologies', label: 'Methodologies' },
     ];
 
+    const lastMainSection =
+        data.military_service?.length > 0 ? 'military' :
+        data.projects?.length > 0 ? 'projects' :
+        data.experience?.length > 0 ? 'experience' :
+        null;
+
+    const sectionStyle = (section) =>
+        section === lastMainSection
+            ? [styles.mainSection, { marginBottom: 0 }]
+            : styles.mainSection;
+
     return (
         <Document>
-            <Page size="A4" style={styles.page} wrap>
-                <View style={styles.sidebar} fixed>
+            <Page size="A4" style={styles.page}>
+                <View style={styles.sidebar}>
                     {data.personal_info?.image && typeof data.personal_info.image === 'string' && (
                         <Image src={data.personal_info.image} style={styles.profileImage} />
                     )}
@@ -472,10 +609,10 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                     )}
 
                     {data.experience && data.experience.length > 0 && (
-                        <View style={styles.mainSection}>
+                        <View style={sectionStyle('experience')}>
                             <Text style={styles.mainSectionTitle}>Work Experience</Text>
                             {data.experience.map((exp, index) => (
-                                <View key={index} style={styles.experienceItem}>
+                                <View key={index} style={styles.experienceItem} minPresenceAhead={0}>
                                     <Text style={styles.jobTitle}>{exp.position}</Text>
                                     <View style={styles.experienceHeader}>
                                         <Text style={styles.companyName}>{exp.company}</Text>
@@ -492,14 +629,14 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                     )}
 
                     {data.projects && data.projects.length > 0 && (
-                        <View style={styles.mainSection}>
+                        <View style={sectionStyle('projects')}>
                             <Text style={styles.mainSectionTitle}>Projects & Training</Text>
                             {data.projects.map((project, index) => (
-                                <View key={index} style={styles.experienceItem}>
+                                <View key={index} style={styles.experienceItem} minPresenceAhead={0}>
                                     <Text style={styles.projectName}>{project.name}</Text>
                                     {project.type && <Text style={styles.projectType}>{project.type}</Text>}
                                     {project.description && (
-                                        <Text style={styles.projectDescription}>{project.description}</Text>
+                                        <FormattedText html={project.description} style={styles.projectDescription} />
                                     )}
                                 </View>
                             ))}
@@ -507,10 +644,10 @@ const ProfessionalTemplatePDF = ({ data, accentColor }) => {
                     )}
 
                     {data.military_service && data.military_service.length > 0 && (
-                        <View style={styles.mainSection}>
+                        <View style={sectionStyle('military')}>
                             <Text style={styles.mainSectionTitle}>Military Service</Text>
                             {data.military_service.map((service, index) => (
-                                <View key={index} style={styles.experienceItem}>
+                                <View key={index} style={styles.experienceItem} minPresenceAhead={0}>
                                     <Text style={styles.jobTitle}>{service.rank}</Text>
                                     <View style={styles.experienceHeader}>
                                         <Text style={styles.companyName}>{service.unit}</Text>
