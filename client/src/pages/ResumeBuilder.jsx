@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { dummyResumeData } from '../assets/assets'
-import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User, Shield, Code2 } from 'lucide-react'
+import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, Code2, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User, Shield } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -18,6 +18,8 @@ import api from '../configs/api'
 import toast from 'react-hot-toast'
 import { pdf } from '@react-pdf/renderer'
 import { getPDFTemplate } from '../components/pdf-templates'
+import { generateDocxBlob } from '../components/docx-templates'
+import { getResumeFileName, triggerFileDownload } from '../utils/docx/resumeFormat'
 
 const ResumeBuilder = () => {
 
@@ -38,7 +40,7 @@ const ResumeBuilder = () => {
       languages_frontend: [],
       backend_dbs: [],
       tools_testing: [],
-      methodologies: []
+      methodologies: [],
     },
     military_service: [],
     template: "classic",
@@ -62,6 +64,7 @@ const ResumeBuilder = () => {
 
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [removeBackground, setRemoveBackground] = useState(false);
+  const [downloadFormat, setDownloadFormat] = useState('pdf');
 
   const section = [
     { id: "personal", name: "Personal Info", icon: User},
@@ -69,8 +72,8 @@ const ResumeBuilder = () => {
     { id: "experience", name: "experience", icon: Briefcase},
     { id: "education", name: "education", icon: GraduationCap},
     { id: "project", name: "project", icon: FolderIcon},
-    { id: "skills", name: "skills", icon: Sparkles},
     { id: "techstack", name: "Tech Stack", icon: Code2},
+    { id: "skills", name: "skills", icon: Sparkles},
     { id: "military", name: "military", icon: Shield},
 
   ]
@@ -105,39 +108,73 @@ const ResumeBuilder = () => {
     }
   }
 
+  const resolveImageForPdf = async (image) => {
+    if (!image) return "";
+    if (typeof image === "string") return image;
+    if (image instanceof File || image instanceof Blob) {
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(image);
+      });
+    }
+    return "";
+  };
+
+  const downloadAsPdf = async () => {
+    const PDFTemplate = getPDFTemplate(resumeData.template);
+    const imageSrc = await resolveImageForPdf(resumeData.personal_info?.image);
+
+    const pdfData = {
+      ...resumeData,
+      personal_info: {
+        ...resumeData.personal_info,
+        image: imageSrc,
+      },
+    };
+
+    const blob = await pdf(
+      <PDFTemplate data={pdfData} accentColor={resumeData.accent_color} />
+    ).toBlob();
+
+    triggerFileDownload(blob, getResumeFileName(resumeData, 'pdf'));
+    toast.success('PDF downloaded');
+  };
+
+  const downloadAsDocx = async () => {
+    const imageSrc = await resolveImageForPdf(resumeData.personal_info?.image);
+
+    const docxData = {
+      ...resumeData,
+      personal_info: {
+        ...resumeData.personal_info,
+        image: imageSrc,
+      },
+    };
+
+    const blob = await generateDocxBlob(
+      resumeData.template,
+      docxData,
+      resumeData.accent_color
+    );
+
+    triggerFileDownload(blob, getResumeFileName(resumeData, 'docx'));
+    toast.success('DOCX downloaded');
+  };
+
   const downLoadResume = async () => {
     try {
-      toast.loading('Generating PDF...');
-      
-      // Get the appropriate PDF template component
-      const PDFTemplate = getPDFTemplate(resumeData.template);
-      
-      // Create the PDF document
-      const doc = <PDFTemplate data={resumeData} accentColor={resumeData.accent_color} />;
-      
-      // Generate the PDF blob
-      const blob = await pdf(doc).toBlob();
-      
-      // Create download link
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${resumeData.title || 'resume'}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      // Clean up
-      URL.revokeObjectURL(url);
-      
-      toast.dismiss();
-      toast.success('PDF downloaded successfully!');
+      if (downloadFormat === 'docx') {
+        await downloadAsDocx();
+      } else {
+        await downloadAsPdf();
+      }
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      toast.dismiss();
-      toast.error('Failed to generate PDF. Please try again.');
+      console.error(`${downloadFormat.toUpperCase()} download failed:`, error);
+      toast.error(`Failed to generate ${downloadFormat.toUpperCase()}`);
     }
-  }
+  };
 
   const saveResume = async ()=>{
     try {
@@ -229,11 +266,11 @@ const ResumeBuilder = () => {
                 {activeSection.id == 'project' && (
                   <ProjectForm data={resumeData.projects} onChange={(data)=> setResumeData(prev=> ({...prev, projects: data}))} />
                 )}
-                {activeSection.id == 'skills' && (
-                  <SkillsForm data={resumeData.skills} onChange={(data)=> setResumeData(prev=> ({...prev, skills: data}))} />
-                )}
                 {activeSection.id == 'techstack' && (
                   <TechStackForm data={resumeData.tech_stack} onChange={(data)=> setResumeData(prev=> ({...prev, tech_stack: data}))} />
+                )}
+                {activeSection.id == 'skills' && (
+                  <SkillsForm data={resumeData.skills} onChange={(data)=> setResumeData(prev=> ({...prev, skills: data}))} />
                 )}
                 {activeSection.id == 'military' && (
                   <MilitaryServiceForm data={resumeData.military_service} onChange={(data)=> setResumeData(prev=> ({...prev, military_service: data}))} />
@@ -264,6 +301,16 @@ const ResumeBuilder = () => {
                   {resumeData.public ? <EyeIcon className='size-4'/> : <EyeOffIcon className='size-4'/>}
                   {resumeData.public? 'Public' : 'Private'}
                 </button>
+
+                <select
+                  value={downloadFormat}
+                  onChange={(e) => setDownloadFormat(e.target.value)}
+                  className='px-3 py-2 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-green-200'
+                  aria-label="Download format"
+                >
+                  <option value="pdf">PDF</option>
+                  <option value="docx">DOCX</option>
+                </select>
 
                 <button onClick={downLoadResume} className='flex items-center gap-2 px-6 py-2 text-xs bg-gradient-to-br from-green-100 to-green-200 text-green-600 rounded-lg ring-green-300 hover:ring transition-colors'>
                   <DownloadIcon className='size-4'/> Download

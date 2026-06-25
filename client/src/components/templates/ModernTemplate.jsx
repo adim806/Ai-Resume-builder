@@ -130,9 +130,10 @@ const ModernTemplate = ({ data, accentColor }) => {
 										</div>
 									</div>
 									{p.description && (
-										<div className="text-gray-700 leading-relaxed text-sm mt-3">
-											{p.description}
-										</div>
+										<div
+											className="text-gray-700 leading-relaxed text-sm mt-3"
+											dangerouslySetInnerHTML={{ __html: p.description }}
+										/>
 									)}
 								</div>
 							))}

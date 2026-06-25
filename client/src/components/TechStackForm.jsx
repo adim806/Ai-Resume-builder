@@ -1,7 +1,14 @@
 import { Code2, Plus, X } from 'lucide-react'
 import React, { useState } from 'react'
 
-const TechStackForm = ({data, onChange}) => {
+const defaultTechStack = {
+    languages_frontend: [],
+    backend_dbs: [],
+    tools_testing: [],
+    methodologies: [],
+}
+
+const TechStackForm = ({ data = defaultTechStack, onChange }) => {
     const [newItems, setNewItems] = useState({
         languages_frontend: "",
         backend_dbs: "",
@@ -36,21 +43,23 @@ const TechStackForm = ({data, onChange}) => {
         }
     ]
 
+    const stack = { ...defaultTechStack, ...data }
+
     const addItem = (category) => {
         const value = newItems[category].trim()
-        if (value && !data[category]?.includes(value)) {
+        if (value && !stack[category]?.includes(value)) {
             onChange({
-                ...data,
-                [category]: [...(data[category] || []), value]
+                ...stack,
+                [category]: [...(stack[category] || []), value]
             })
-            setNewItems({...newItems, [category]: ""})
+            setNewItems({ ...newItems, [category]: "" })
         }
     }
 
     const removeItem = (category, indexToRemove) => {
         onChange({
-            ...data,
-            [category]: data[category].filter((_, index) => index !== indexToRemove)
+            ...stack,
+            [category]: stack[category].filter((_, index) => index !== indexToRemove)
         })
     }
 
@@ -91,7 +100,7 @@ const TechStackForm = ({data, onChange}) => {
         return colors[color]
     }
 
-    const hasAnyData = categories.some(cat => data[cat.key]?.length > 0)
+    const hasAnyData = categories.some(cat => stack[cat.key]?.length > 0)
 
     return (
         <div className='space-y-6'>
@@ -110,38 +119,38 @@ const TechStackForm = ({data, onChange}) => {
                         <label className='block text-sm font-medium text-gray-700'>
                             {category.label}
                         </label>
-                        
+
                         <div className='flex gap-2'>
-                            <input 
+                            <input
                                 type="text"
                                 placeholder={category.placeholder}
-                                className='flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none'
+                                className='flex-1 px-3 py-2 text-sm rounded-lg'
                                 value={newItems[category.key]}
-                                onChange={(e) => setNewItems({...newItems, [category.key]: e.target.value})}
+                                onChange={(e) => setNewItems({ ...newItems, [category.key]: e.target.value })}
                                 onKeyDown={(e) => handleKeyPress(e, category.key)}
                             />
-                            <button 
+                            <button
                                 onClick={() => addItem(category.key)}
                                 disabled={!newItems[category.key].trim()}
                                 className={`flex items-center gap-2 px-4 py-2 text-sm text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${colors.button}`}
                             >
-                                <Plus className='size-4'/> Add
+                                <Plus className='size-4' /> Add
                             </button>
                         </div>
 
-                        {data[category.key]?.length > 0 && (
+                        {stack[category.key]?.length > 0 && (
                             <div className='flex flex-wrap gap-2 mt-2'>
-                                {data[category.key].map((item, index) => (
-                                    <span 
-                                        key={index} 
+                                {stack[category.key].map((item, index) => (
+                                    <span
+                                        key={index}
                                         className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm ${colors.bg} ${colors.text}`}
                                     >
                                         {item}
-                                        <button 
+                                        <button
                                             onClick={() => removeItem(category.key, index)}
                                             className={`ml-1 rounded-full p-0.5 transition-colors ${colors.hover}`}
                                         >
-                                            <X className='w-4 h-3'/>
+                                            <X className='w-4 h-3' />
                                         </button>
                                     </span>
                                 ))}
@@ -154,7 +163,7 @@ const TechStackForm = ({data, onChange}) => {
             {!hasAnyData && (
                 <div className='bg-blue-50 p-4 rounded-lg'>
                     <p className='text-sm text-blue-800'>
-                        <strong>Tip:</strong> Organize your technical skills into categories for better presentation. 
+                        <strong>Tip:</strong> Organize your technical skills into categories for better presentation.
                         This helps employers quickly identify your expertise in different areas.
                     </p>
                 </div>
@@ -164,4 +173,3 @@ const TechStackForm = ({data, onChange}) => {
 }
 
 export default TechStackForm
-
