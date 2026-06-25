@@ -18,6 +18,8 @@ import api from '../configs/api'
 import toast from 'react-hot-toast'
 import { pdf } from '@react-pdf/renderer'
 import { getPDFTemplate } from '../components/pdf-templates'
+import { generateDocxBlob } from '../components/docx-templates'
+import { getResumeFileName, triggerFileDownload } from '../utils/docx/resumeFormat'
 
 const ResumeBuilder = () => {
 
@@ -62,6 +64,7 @@ const ResumeBuilder = () => {
 
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [removeBackground, setRemoveBackground] = useState(false);
+  const [downloadFormat, setDownloadFormat] = useState('pdf');
 
   const section = [
     { id: "personal", name: "Personal Info", icon: User},
@@ -119,34 +122,57 @@ const ResumeBuilder = () => {
     return "";
   };
 
+  const downloadAsPdf = async () => {
+    const PDFTemplate = getPDFTemplate(resumeData.template);
+    const imageSrc = await resolveImageForPdf(resumeData.personal_info?.image);
+
+    const pdfData = {
+      ...resumeData,
+      personal_info: {
+        ...resumeData.personal_info,
+        image: imageSrc,
+      },
+    };
+
+    const blob = await pdf(
+      <PDFTemplate data={pdfData} accentColor={resumeData.accent_color} />
+    ).toBlob();
+
+    triggerFileDownload(blob, getResumeFileName(resumeData, 'pdf'));
+    toast.success('PDF downloaded');
+  };
+
+  const downloadAsDocx = async () => {
+    const imageSrc = await resolveImageForPdf(resumeData.personal_info?.image);
+
+    const docxData = {
+      ...resumeData,
+      personal_info: {
+        ...resumeData.personal_info,
+        image: imageSrc,
+      },
+    };
+
+    const blob = await generateDocxBlob(
+      resumeData.template,
+      docxData,
+      resumeData.accent_color
+    );
+
+    triggerFileDownload(blob, getResumeFileName(resumeData, 'docx'));
+    toast.success('DOCX downloaded');
+  };
+
   const downLoadResume = async () => {
     try {
-      const PDFTemplate = getPDFTemplate(resumeData.template);
-      const imageSrc = await resolveImageForPdf(resumeData.personal_info?.image);
-
-      const pdfData = {
-        ...resumeData,
-        personal_info: {
-          ...resumeData.personal_info,
-          image: imageSrc,
-        },
-      };
-
-      const blob = await pdf(
-        <PDFTemplate data={pdfData} accentColor={resumeData.accent_color} />
-      ).toBlob();
-
-      const fileName = `${resumeData.personal_info?.full_name || resumeData.title || "resume"}.pdf`;
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = fileName;
-      link.click();
-      URL.revokeObjectURL(url);
-      toast.success("PDF downloaded");
+      if (downloadFormat === 'docx') {
+        await downloadAsDocx();
+      } else {
+        await downloadAsPdf();
+      }
     } catch (error) {
-      console.error("PDF download failed:", error);
-      toast.error("Failed to generate PDF");
+      console.error(`${downloadFormat.toUpperCase()} download failed:`, error);
+      toast.error(`Failed to generate ${downloadFormat.toUpperCase()}`);
     }
   };
 
@@ -275,6 +301,16 @@ const ResumeBuilder = () => {
                   {resumeData.public ? <EyeIcon className='size-4'/> : <EyeOffIcon className='size-4'/>}
                   {resumeData.public? 'Public' : 'Private'}
                 </button>
+
+                <select
+                  value={downloadFormat}
+                  onChange={(e) => setDownloadFormat(e.target.value)}
+                  className='px-3 py-2 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-green-200'
+                  aria-label="Download format"
+                >
+                  <option value="pdf">PDF</option>
+                  <option value="docx">DOCX</option>
+                </select>
 
                 <button onClick={downLoadResume} className='flex items-center gap-2 px-6 py-2 text-xs bg-gradient-to-br from-green-100 to-green-200 text-green-600 rounded-lg ring-green-300 hover:ring transition-colors'>
                   <DownloadIcon className='size-4'/> Download

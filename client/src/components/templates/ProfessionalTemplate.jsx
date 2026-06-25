@@ -103,7 +103,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                 {data.personal_info?.linkedin && (
                                     <div className="flex items-start gap-2.5">
                                         <IconCircle>
-                                            <Linkedin size={14} style={{ color: accentColor }} />
+                                            <Linkedin size={16} style={{ color: accentColor }} />
                                         </IconCircle>
                                         <a
                                             href={
@@ -113,7 +113,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                             }
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="break-words underline hover:no-underline leading-relaxed pt-0.5 text-xs text-gray-400"
+                                            className="break-words underline hover:no-underline leading-relaxed pt-0.5 text-xs text-gray-300"
                                         >
                                             {data.personal_info.linkedin.replace(/^https?:\/\//, "")}
                                         </a>
@@ -122,7 +122,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                 {data.personal_info?.github && (
                                     <div className="flex items-start gap-2.5">
                                         <IconCircle>
-                                            <Github size={14} style={{ color: accentColor }} />
+                                            <Github size={16} style={{ color: accentColor }} />
                                         </IconCircle>
                                         <a
                                             href={
@@ -132,7 +132,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                             }
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="break-words underline hover:no-underline leading-relaxed pt-0.5 text-xs text-gray-400"
+                                            className="break-words underline hover:no-underline leading-relaxed pt-0.5 text-xs text-gray-300"
                                         >
                                             {data.personal_info.github.replace(/^https?:\/\//, "")}
                                         </a>
@@ -151,7 +151,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                             }
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="break-words underline hover:no-underline leading-relaxed pt-0.5 text-xs text-gray-400"
+                                            className="break-words underline hover:no-underline leading-relaxed pt-0.5 text-xs text-gray-300"
                                         >
                                             {data.personal_info.website.replace(/^https?:\/\//, "")}
                                         </a>
@@ -297,7 +297,7 @@ const ProfessionalTemplate = ({ data, accentColor }) => {
                                         )}
                                         {project.description && (
                                             <div
-                                                className={`${bodyTextClass} mt-1.5`}
+                                                className={`${bodyTextClass} mt-1.5 ml-3`}
                                                 dangerouslySetInnerHTML={{ __html: project.description }}
                                             />
                                         )}
